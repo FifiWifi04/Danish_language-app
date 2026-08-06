@@ -1,5 +1,17 @@
 # DanmarksLiv — Project Handoff
 
+**Revision 1.1 (2026-08-06).** This handoff was critically reviewed; the
+review's corrections are **binding** and live in `REVIEW.md` Part A. The
+build is now executed autonomously: `AUTON_ORDERS.md` is the per-firing
+procedure, `AUTON_STATUS.md` the queue, and the `PLAN_*.md` files the
+executor-grade specifications — where §4.6's phases and the plans
+disagree, the plans win. Major additions in 1.1: the Udtale pronunciation
+lab (mechanical articulation guide + minimal-pair perception drills +
+self-record), progress export/import, stats + session log, PWA update
+flow, leech-rework/flag/undo UI, `priority`-ordered new-card
+introduction, and a TTS-only audio default (Forvo parked for licensing —
+REVIEW.md A.4). See §7.
+
 **Purpose of this document.** This is the full context for a personal Danish-learning PWA, written to be dropped into a fresh repository so an agent with no conversation history can plan and build it correctly. It records three things: what was originally specified, what was wrong with it and why, and the revised plan that resulted.
 
 Read the "Why these decisions" sections before proposing changes. Several choices here look arbitrary and are not — they are corrections of specific failure modes, and reverting them re-introduces bugs that were already reasoned through.
@@ -91,18 +103,21 @@ Two configuration items to handle in Phase 0 rather than discover later:
 content/              deck source of truth (JSON, hand-checked)
   deck.v1.json
   particles.v1.json
+  pronunciation.v1.json   Udtale lab guide entries (rev 1.1, PLAN_PRONUNCIATION.md)
 scripts/              offline tooling, run locally only
   validate-deck.ts
   build-audio.ts
   audio-manifest.json
 src/
-  core/               pure: scheduler, session queue, store interface
-  data/               IndexedDB progress store
-  ui/                 views, one file per mode
+  core/               pure: scheduler, session queue, store interface, time, rng
+  data/               IndexedDB progress store (+ memory adapter for tests)
+  ui/                 views: shell, review, udtale, stats, backup, audio
 public/audio/         generated mp3, committed
-tests/
+tests/                unit + simulation soak + e2e/ Playwright smokes
 docs/DECISIONS.md
 CLAUDE.md
+AUTON_ORDERS.md AUTON_STATUS.md OWNER_INPUTS.md PARKED_GATES.md REVIEW.md
+PLAN_*.md             executor-grade specs, one per phase + pronunciation
 ```
 
 ### 4.3 The core purity rule
@@ -183,3 +198,44 @@ Two problems: Danish municipalities already provide subsidised Danish instructio
 - **Branch protection with CI required**, including the Phase 1 simulation soak.
 - **`docs/DECISIONS.md` gets an entry per non-obvious choice** — day-number due dates, leech-at-8, ease floor, pregenerated audio, emoji-first visuals. Sessions have no memory of the reasoning; without this, the same well-intentioned reversions recur.
 - **Keep files under ~200 lines.** Not aesthetics — it determines how much of a file survives in context when a session is also holding the test file and the spec.
+
+---
+
+## 7. Revision 1.1 — autonomous build-out (2026-08-06)
+
+The working agreement above described a process with no execution engine
+(REVIEW.md A.12). Revision 1.1 adds the machinery proven in
+FifiWifi04/Building_app, adapted for a smaller executor model:
+
+- **`AUTON_ORDERS.md`** — standing orders per scheduled firing: sync,
+  kill switch (`AUTON_HOLD`), entry regression, take the topmost
+  unblocked queue item, ONE workstream per session, STOP list, tiered
+  verification, push-and-prove, status update. The routine prompt to arm
+  the trigger is quoted at the top of that file.
+- **`AUTON_STATUS.md`** — the queue (~24 items covering Phases 0–5 plus
+  the Udtale lab), the gate registry (G1 content review, G2 audio
+  generated, G3 seven-day usage; D-DEP1/D-AUD1 decisions), the iteration
+  log, the fixes log, and DECISIONS-NEEDED. The single pane of glass;
+  the owner steers by editing it.
+- **`PLAN_*.md`** (seven files) — executor-grade: exact paths, exported
+  signatures, hand-written scheduler transition table, acceptance
+  criteria as test names, per-WS Playwright smokes. The executor
+  implements to failing tests; it never designs.
+- **`OWNER_INPUTS.md`** — the complete, bounded list of what the owner
+  must do; everything absent from it is the routine's job.
+- **`PARKED_GATES.md`** — dialogues, Forvo, diagrams, scoring, sync,
+  grammar module, LFS, commercialisation: never started autonomously.
+- **The content firewall** — generated content is always
+  `status:"draft"` and visibly badged; only owner-supplied review
+  verdicts flip it to `reviewed`; agents never edit reviewed content.
+  This is §3.7 turned into a mechanical rule.
+
+Feature deltas over the original plan (rationale in REVIEW.md Part A):
+the Udtale pronunciation lab with mechanical articulation instructions,
+minimal-pair perception drills, and self-record/compare (A.2); progress
+export/import + backup nudge (A.3); TTS-only audio default, Forvo parked
+on licensing (A.4); session log + stats making the Phase-3 gate
+measurable (A.5); PWA update toast (A.6); pinned scheduler rep semantics
+(A.7); `priority`-ordered new-card introduction (A.8); leech rework
+list, in-review card flagging, undo (A.9); the `idb` dependency proposal
+(A.10); dialogue blocks parked, not lost (A.11).
