@@ -76,6 +76,14 @@ is almost always environmental, not a naming error:
   "the repo only has these branches". `git ls-remote --heads origin` is
   the only authoritative answer, so run it before concluding anything.
 
+**`main` carries a snapshot of these orders** (owner-approved 2026-08-07,
+so a fresh session finds them in its default checkout even before it sees
+the build branch). That snapshot is documentation only and is NOT a
+licence to work on `main`: every commit this routine makes goes to
+`claude/danish-app-design-review-z48b7e`. If you are reading this file
+from a `main` checkout, switch to the build branch first — and treat the
+build branch's copy as authoritative if the two ever differ.
+
 ## Step 2 — kill switch
 
 If `AUTON_HOLD` exists at the repo root on origin: append a "held" line
