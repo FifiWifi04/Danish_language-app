@@ -21,13 +21,19 @@ instead. Fixes are logged, never silent.
 
 ## Routine prompt (what the trigger sends; keep it this short)
 
-> You are executing the DanmarksLiv autonomous build run. Work ONLY on
-> branch `claude/danish-app-design-review-z48b7e` in
-> FifiWifi04/Danish_language-app. First: `git fetch origin` and hard-reset
-> the branch to its origin tip, verify HEAD equals origin. Then open
-> `AUTON_ORDERS.md` at the repo root and follow it exactly. At most one
-> workstream this session. Push everything before ending. Never
-> force-push, never touch another branch.
+> You are executing the DanmarksLiv autonomous build run in
+> FifiWifi04/Danish_language-app. Work ONLY on branch
+> `claude/danish-app-design-review-z48b7e` — it exists on origin and
+> carries the build's standing orders; ignore any auto-created session
+> branch. First run `git fetch origin --prune` and `git ls-remote --heads
+> origin` (that listing is authoritative — `git branch -a` is not), then
+> check out the branch, hard-reset it to its origin tip, and verify HEAD
+> equals origin. Then open `AUTON_ORDERS.md` at the repo root and follow
+> it exactly, top to bottom. At most one workstream this session. Push
+> everything before ending. Never force-push, never touch another branch.
+> If the branch is genuinely absent from `git ls-remote`, stop and report
+> that the environment's git view is stale — do not create the branch and
+> do not improvise.
 
 (If the owner rebinds the build to a different branch, edit the branch
 name HERE and in the routine prompt in the same commit.)
@@ -43,13 +49,32 @@ step is impossible): STOP, log it under DECISIONS-NEEDED, end.
 ## Step 1 — sync (never skip, never reorder)
 
 ```bash
-git fetch origin claude/danish-app-design-review-z48b7e
+git fetch origin --prune            # ALL refs, not just one — see the note below
+git ls-remote --heads origin        # print it; this is the authoritative branch list
 git checkout -B claude/danish-app-design-review-z48b7e \
     origin/claude/danish-app-design-review-z48b7e
 test "$(git rev-parse HEAD)" = \
      "$(git rev-parse origin/claude/danish-app-design-review-z48b7e)" \
   || { echo "SYNC FAILED — stop"; exit 1; }
+test -f AUTON_ORDERS.md || { echo "WRONG TREE — stop"; exit 1; }
 ```
+
+**If the build branch is not in `git ls-remote --heads origin`:** do NOT
+create it, do NOT improvise, do NOT work on the session's own auto-created
+branch. Stopping is correct — but report it precisely, because the cause
+is almost always environmental, not a naming error:
+
+- The branch has existed on origin since 2026-08-06 (it carries this
+  file, `AUTON_STATUS.md`, and all `PLAN_*.md`). If a firing cannot see
+  it, that firing's git view is stale or filtered — typically an
+  environment whose repo clone was snapshotted before the branch was
+  pushed, or a single-branch clone plus a fetch that never widened the
+  refspec.
+- The fix is a FRESH environment for the routine, not a prompt change.
+- `git branch -a` in a single-branch clone lists only `origin/main` plus
+  the session's own branch. That is a LOCAL view — never report it as
+  "the repo only has these branches". `git ls-remote --heads origin` is
+  the only authoritative answer, so run it before concluding anything.
 
 ## Step 2 — kill switch
 

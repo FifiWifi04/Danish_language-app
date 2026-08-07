@@ -49,10 +49,33 @@ file from anywhere — iterations re-read it on every firing.
 ## Iteration log (append-only; one line per firing)
 
 - 2026-08-06 — seeded by design review; no autonomous iterations yet.
+- 2026-08-07 — FIRST FIRING ABORTED at step 1: the session reported the
+  build branch missing from origin and stopped without changes. Stopping
+  was CORRECT behaviour. Diagnosis below; no code impact.
 
 ## Solutions & fixes log
 
-(empty)
+- **2026-08-07 — first firing could not see the build branch (environmental,
+  not a repo defect).** *What broke:* the firing reported `git fetch origin
+  claude/danish-app-design-review-z48b7e` → "couldn't find remote ref", and
+  described origin as having only `main` and its own auto-created session
+  branch. *Verified reality:* `git ls-remote --heads origin` at the same
+  time returned exactly two refs — `main` (92624d6) and
+  `claude/danish-app-design-review-z48b7e` (08dc92b, carrying all 14
+  scaffolding files). The branch has existed since 2026-08-06 and had
+  three verified pushes. *Root cause:* the firing's environment had a
+  stale or single-branch git view (clone snapshotted before the branch
+  was pushed); `git branch -a` in such a clone shows only `origin/main`
+  plus the session branch, which the firing reported as the repo's true
+  contents. *Solution:* (a) re-create the routine in a FRESH environment —
+  the actual fix, since no prompt change can widen a stale mirror;
+  (b) AUTON_ORDERS step 1 now fetches ALL refs (`--prune`), prints
+  `git ls-remote --heads origin` as the authoritative listing, asserts
+  `AUTON_ORDERS.md` is present in the tree, and documents that a missing
+  branch means a stale environment — never a licence to create the branch
+  or work on the session's own. *Reviewer should double-check:* that the
+  first successful firing's log line names the expected branch, and that
+  no commit ever lands on an auto-created `claude/<random>` branch.
 
 ## DECISIONS-NEEDED (owner)
 
