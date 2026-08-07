@@ -7,22 +7,22 @@ both.
 
 ## Decisions
 
-- [ ] **D-DEP1 — approve `idb`?** A ~1.5 kB promise wrapper over
+- [yes] **D-DEP1 — approve `idb`?** A ~1.5 kB promise wrapper over
   IndexedDB. Recommended **yes**: raw IndexedDB is the most likely place
   for the build model to burn sessions on transaction-lifetime bugs.
   Declining is fine — the store interface doesn't change, the adapter is
   just written against the raw API.
-- [ ] **D-AUD1 — audio provider.** Recommended **TTS-only v1** (one
+- [ElevenLabs] **D-AUD1 — audio provider.** Recommended **TTS-only v1** (one
   provider: ElevenLabs Multilingual, or Azure neural Danish which is
   cheaper — either works with the same script contract). Forvo human
   recordings are PARKED for licensing reasons (REVIEW.md A.4): their API
   terms don't allow redistribution, and a public repo redistributes.
   Revisit only with a licensing check or a private repo.
-- [ ] **D-REPO1 — repo stays public?** On a free GitHub plan, Pages needs
+- [It is private] **D-REPO1 — repo stays public?** On a free GitHub plan, Pages needs
   a public repo, and public + committed third-party audio is what makes
   Forvo a licensing problem. Default assumption: **public repo, TTS
   audio**.
-- [ ] **Routine cadence + model** when arming the trigger (Building_app
+- [every 3 hours] **Routine cadence + model** when arming the trigger (Building_app
   used every 6 h; this queue is ~24 items, so at 6 h it drains in roughly
   a week of clean firings).
 
@@ -31,12 +31,12 @@ both.
 - [ ] Enable **GitHub Pages** with source "GitHub Actions" (repo →
   Settings → Pages) — item 1's deploy stays `live-verify DEFERRED` until
   this is done.
-- [ ] Optional but recommended: **branch protection** on the build branch
+- [Yes] Optional but recommended: **branch protection** on the build branch
   with CI required, per HANDOFF §6.
 
 ## Recurring / gate clearances
 
-- [ ] **G1 — arrange the native review** of the 30-card pilot: phonetics
+- [Yes] **G1 — arrange the native review** of the 30-card pilot: phonetics
   AND grammar notes AND the pronunciation guide's mechanics, plus
   *listening* to the stød-critical audio clips. A tutor or native Dane;
   an italki session is enough. Record the error rate in `AUTON_STATUS.md`.
