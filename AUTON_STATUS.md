@@ -21,7 +21,7 @@ file from anywhere — iterations re-read it on every firing.
 | 0 | Scaffold: Vite+TS strict+Vitest, app shell, `base` path, `docs/DECISIONS.md` seeded with the handoff's decisions | PHASE0 WS-A | done@37a1b64 | — |
 | 1 | CI (test+typecheck+build) + Pages deploy workflow | PHASE0 WS-B | done@eb6b9c2 | — (deploy-pages CONFIRMED SUCCEEDING 2026-08-07 after owner enabled Pages; see log) |
 | 2 | Day-number time core + seeded RNG (pure, tested) | PHASE1 WS-A | done@1fc5f2c | — |
-| 3 | Scheduler transitions per the authoritative table (expected values hand-written first) | PHASE1 WS-B | todo (UNBLOCKED 2026-08-07 — row 12b added to the table + `docs/DECISIONS.md` entry; take this next) | — |
+| 3 | Scheduler transitions per the authoritative table (expected values hand-written first) | PHASE1 WS-B | done@ad84b4d | — |
 | 4 | Session queue builder (caps, ordering, no-repeat, relearning re-entry) | PHASE1 WS-C | done@8cdfd8f | — |
 | 5 | Progress store: interface + memory adapter + IndexedDB adapter | PHASE1 WS-D | todo | D-DEP1 answered (either answer unblocks) |
 | 6 | Simulation soak harness (2 y × 500 cards) wired into `npm test` | PHASE1 WS-E | todo | — |
@@ -107,6 +107,23 @@ file from anywhere — iterations re-read it on every firing.
   is pinned by a named test (`session: new cards are introduced only
   after due reviews are cleared…`). No UI/PWA/content touched, no new
   dependency, so tier 2/3 don't apply.
+- 2026-08-07 — item 3 (PHASE1 WS-B scheduler transitions) done@ad84b4d,
+  tier-1 verified (npm test: 31/31 incl. one named `sched:` test per
+  table row 1–12b plus the plan's five invariant tests — ease bound,
+  interval cap, leech-at-8, purity, totality; tsc --noEmit; vite build
+  all green), pushed. `src/core/scheduler.ts` implements `schedule()`
+  exactly per the now-total transition table, including row 12b per the
+  2026-08-07 `docs/DECISIONS.md` entry. `state='suspended'` (not covered
+  by any row, since the session queue never presents a suspended card to
+  `schedule()`) is a deliberate passthrough — only row 13's blanket
+  clamp/leech check applies to it — needed to satisfy the plan's own
+  totality test (5 states × 3 ratings, no throw/NaN) without inventing
+  scheduler behaviour for an unreachable input; this reading has no
+  plausible alternative the way relearning+hard did, so it wasn't treated
+  as a DECISIONS-NEEDED stop. Tests split across `tests/scheduler.test.ts`
+  (row tests) and `tests/scheduler-invariants.test.ts` (property tests)
+  to keep both under CLAUDE.md's ~200-line guideline. No UI/PWA/content
+  touched, no new dependency, so tier 2/3 don't apply.
 
 ## Solutions & fixes log
 
