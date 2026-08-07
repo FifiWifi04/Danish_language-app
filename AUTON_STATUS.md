@@ -21,8 +21,8 @@ file from anywhere — iterations re-read it on every firing.
 | 0 | Scaffold: Vite+TS strict+Vitest, app shell, `base` path, `docs/DECISIONS.md` seeded with the handoff's decisions | PHASE0 WS-A | done@37a1b64 | — |
 | 1 | CI (test+typecheck+build) + Pages deploy workflow | PHASE0 WS-B | done@eb6b9c2 | — (deploy-pages CONFIRMED SUCCEEDING 2026-08-07 after owner enabled Pages; see log) |
 | 2 | Day-number time core + seeded RNG (pure, tested) | PHASE1 WS-A | done@1fc5f2c | — |
-| 3 | Scheduler transitions per the authoritative table (expected values hand-written first) | PHASE1 WS-B | todo | — |
-| 4 | Session queue builder (caps, ordering, no-repeat, relearning re-entry) | PHASE1 WS-C | todo | — |
+| 3 | Scheduler transitions per the authoritative table (expected values hand-written first) | PHASE1 WS-B | blocked(needs relearning+hard decision) | — |
+| 4 | Session queue builder (caps, ordering, no-repeat, relearning re-entry) | PHASE1 WS-C | done@8cdfd8f | — |
 | 5 | Progress store: interface + memory adapter + IndexedDB adapter | PHASE1 WS-D | todo | D-DEP1 answered (either answer unblocks) |
 | 6 | Simulation soak harness (2 y × 500 cards) wired into `npm test` | PHASE1 WS-E | todo | — |
 | 7 | Content schema + validator (`vocab`, `particle`, `pronunciation` types) + `npm run validate` in CI | PHASE2 WS-A | todo | — |
@@ -77,6 +77,36 @@ file from anywhere — iterations re-read it on every firing.
   green), pushed. `src/core/time.ts` and `src/core/rng.ts` implement the
   plan's WS-A signatures exactly; no scheduler/UI/content touched, no
   new dependency, so tier 2/3 don't apply.
+- 2026-08-07 — item 3 (PHASE1 WS-B scheduler) picked up first per queue
+  order but BLOCKED before any code was written: the authoritative
+  transition table in `PLAN_PHASE1_ENGINE.md` has 13 rows covering every
+  (state, rating) pair except one — `state=relearning, rating=hard` has
+  no row. HANDOFF §4.5 and `docs/DECISIONS.md` were also checked and
+  neither addresses it (relearning is described only via its single
+  10-minute step and the again/good outcomes in rows 11–12). Since
+  `ScheduleInput.rating` is `Rating` (`'again'|'hard'|'good'`) with no
+  narrowing per state, `schedule()` must do *something* deterministic for
+  this input, and CLAUDE.md rule 2 forbids inventing scheduler behaviour
+  without a new `docs/DECISIONS.md` entry — this is exactly the
+  STOP-and-flag case in `AUTON_ORDERS.md` step 5 ("a product judgement
+  the plan didn't pre-make"). Moved to `blocked` per orders; see
+  DECISIONS-NEEDED below. Took item 4 instead as this firing's one
+  workstream (no code had been written for item 3, so this doesn't
+  double up on the one-WS bound).
+- 2026-08-07 — item 4 (PHASE1 WS-C session queue builder) done@8cdfd8f,
+  tier-1 verified (npm test: 13/13 incl. the 5 named `session:` tests;
+  tsc --noEmit; vite build all green), pushed. `src/core/session.ts`
+  implements `buildSession` exactly per the plan's signature and rules;
+  also added the plan's shared `src/core/types.ts`
+  (`Progress`/`Rating`/`CardState`/`ScheduleInput`/`Session`), needed by
+  both this workstream and the still-blocked scheduler. One reading
+  decision made in-scope (not a scheduler-behaviour change, just applying
+  the already-stated rule precisely): "new cards only after due reviews
+  are cleared" is implemented as "cleared" meaning zero due reviews left
+  over the `reviewsPerDay` cap — matches HANDOFF §4.5's exact phrase and
+  is pinned by a named test (`session: new cards are introduced only
+  after due reviews are cleared…`). No UI/PWA/content touched, no new
+  dependency, so tier 2/3 don't apply.
 
 ## Solutions & fixes log
 
@@ -103,6 +133,27 @@ file from anywhere — iterations re-read it on every firing.
   no commit ever lands on an auto-created `claude/<random>` branch.
 
 ## DECISIONS-NEEDED (owner)
+
+- **OPEN 2026-08-07 — the scheduler transition table has no row for
+  `state=relearning, rating=hard`.** Blocks item 3 (PHASE1 WS-B). The
+  13-row table in `PLAN_PHASE1_ENGINE.md` covers every other (state,
+  rating) combination the engine can receive, including all three
+  ratings for `review` (rows 7–10) and both ratings that matter for
+  `learning`'s "hard" case generically (row 6: "learning any | hard").
+  But `relearning` gets only two rows — 11 (`good`) and 12 (`again`) — and
+  nothing says what a `hard` rating does to a relearning card. HANDOFF
+  §4.5 doesn't add anything beyond what's already in the table (it only
+  describes the single 10-minute relearning step and the again/good
+  outcomes), and `docs/DECISIONS.md` doesn't mention it either. Two
+  plausible readings, neither pinned by the plan: (a) treat it like row 6
+  and repeat the current [only] step with a shorter due offset, since the
+  `Progress.step` field comment groups "learning/relearning steps"
+  together; or (b) treat relearning as a strictly two-outcome state by
+  design (only one step exists, so only pass/fail make sense) and either
+  collapse `hard` into `again` or into `good`. Owner: please add a row 12b
+  (or amend row 12) to `PLAN_PHASE1_ENGINE.md`'s table and a matching
+  `docs/DECISIONS.md` entry per CLAUDE.md rule 2 — then item 3 unblocks
+  as-is, no other part of WS-B is affected.
 
 - ✅ **RESOLVED 2026-08-07 — no TS script runner is being added.** Good
   catch; the flag was correct and caught this before item 7 hit it cold.
