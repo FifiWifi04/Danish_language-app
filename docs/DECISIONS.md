@@ -93,3 +93,35 @@ is always `"status": "draft"` and renders with a draft badge until the
 owner flips it after the G1 native-review gate. If reviewed content looks
 wrong, the fix is a flag in `AUTON_STATUS.md`'s DECISIONS-NEEDED section,
 not a direct edit. Source: REVIEW.md Part B item 3, HANDOFF §3.7.
+
+## 2026-08-07 — Relearning + Hard graduates at half the pending interval (row 12b)
+
+The original transition table covered `relearning` only for Good (row 11)
+and Again (row 12), leaving `relearning + hard` undefined — caught by the
+first firing to attempt PHASE1 WS-B, which correctly stopped rather than
+inventing behaviour. Resolved as a new row 12b: Hard graduates the card to
+`review` with `intervalDays = max(1, round(intervalDays × 0.5))`, halving
+the already-halved pending interval from row 10, with `reps` unchanged,
+**no further ease change**, and no additional lapse.
+
+Why this and not the alternatives:
+
+- **Hard is a weaker Good, not a stronger Again.** That is already the
+  pattern in the review state (row 9: Hard multiplies by 1.2 where Good
+  multiplies by ease), so relearning should read the same way. The result
+  is a strict, intuitive ordering: Again returns the card in 10 minutes,
+  Hard returns it in half of Good's interval, Good uses the full pending
+  interval.
+- **"Repeat the step" was rejected.** Mirroring row 6 (learning + Hard
+  repeats the current step) fails here because relearning has exactly ONE
+  step, so repeating it is byte-identical to Again — Hard would become a
+  button with no distinct effect, and a learner pressing it could never
+  leave relearning within the session. In the learning state the same rule
+  works only because a second step exists to advance to.
+- **No second ease penalty.** The lapse that entered relearning already
+  applied ease − 0.20 (row 10). Charging another 0.15 would punish one
+  failure episode twice and accelerate the drift toward the 1.3 floor that
+  HANDOFF §3.1 identified as a real degradation mode.
+
+Edge case, intended: when the pending interval is already 1 day, Hard and
+Good coincide. The interval floor of 1 wins over the halving.

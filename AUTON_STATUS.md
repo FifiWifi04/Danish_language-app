@@ -21,7 +21,7 @@ file from anywhere — iterations re-read it on every firing.
 | 0 | Scaffold: Vite+TS strict+Vitest, app shell, `base` path, `docs/DECISIONS.md` seeded with the handoff's decisions | PHASE0 WS-A | done@37a1b64 | — |
 | 1 | CI (test+typecheck+build) + Pages deploy workflow | PHASE0 WS-B | done@eb6b9c2 | — (deploy-pages CONFIRMED SUCCEEDING 2026-08-07 after owner enabled Pages; see log) |
 | 2 | Day-number time core + seeded RNG (pure, tested) | PHASE1 WS-A | done@1fc5f2c | — |
-| 3 | Scheduler transitions per the authoritative table (expected values hand-written first) | PHASE1 WS-B | blocked(needs relearning+hard decision) | — |
+| 3 | Scheduler transitions per the authoritative table (expected values hand-written first) | PHASE1 WS-B | todo (UNBLOCKED 2026-08-07 — row 12b added to the table + `docs/DECISIONS.md` entry; take this next) | — |
 | 4 | Session queue builder (caps, ordering, no-repeat, relearning re-entry) | PHASE1 WS-C | done@8cdfd8f | — |
 | 5 | Progress store: interface + memory adapter + IndexedDB adapter | PHASE1 WS-D | todo | D-DEP1 answered (either answer unblocks) |
 | 6 | Simulation soak harness (2 y × 500 cards) wired into `npm test` | PHASE1 WS-E | todo | — |
@@ -134,7 +134,23 @@ file from anywhere — iterations re-read it on every firing.
 
 ## DECISIONS-NEEDED (owner)
 
-- **OPEN 2026-08-07 — the scheduler transition table has no row for
+- ✅ **RESOLVED 2026-08-07 — `relearning + hard` is now row 12b.** Correct
+  stop; the gap was real and the table is now total over every (state,
+  rating) pair. **Decision:** Hard graduates the card conservatively —
+  `intervalDays = max(1, round(intervalDays × 0.5))` (halving the
+  already-halved pending interval from row 10), `state=review`,
+  `dueDay=today+intervalDays`, `reps` unchanged, **ease unchanged** (the
+  lapse already charged −0.20; a second penalty would double-punish one
+  failure), not a lapse. Reading (a) — repeat the single step — was
+  rejected because with one relearning step it is byte-identical to
+  Again, making Hard a no-op button. Rationale and rejected alternatives
+  are recorded in `docs/DECISIONS.md`; the row is in
+  `PLAN_PHASE1_ENGINE.md`'s table with a named test
+  (`sched: row 12b relearning hard graduates at half the pending
+  interval`) plus a new totality test over all 5 states × 3 ratings.
+  Item 3 is unblocked — take it next.
+
+- ~~**OPEN 2026-08-07 — the scheduler transition table has no row for
   `state=relearning, rating=hard`.** Blocks item 3 (PHASE1 WS-B). The
   13-row table in `PLAN_PHASE1_ENGINE.md` covers every other (state,
   rating) combination the engine can receive, including all three
@@ -153,7 +169,8 @@ file from anywhere — iterations re-read it on every firing.
   collapse `hard` into `again` or into `good`. Owner: please add a row 12b
   (or amend row 12) to `PLAN_PHASE1_ENGINE.md`'s table and a matching
   `docs/DECISIONS.md` entry per CLAUDE.md rule 2 — then item 3 unblocks
-  as-is, no other part of WS-B is affected.
+  as-is, no other part of WS-B is affected.~~
+  *(superseded by the resolution above — kept for the record)*
 
 - ✅ **RESOLVED 2026-08-07 — no TS script runner is being added.** Good
   catch; the flag was correct and caught this before item 7 hit it cold.

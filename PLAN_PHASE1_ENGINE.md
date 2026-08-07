@@ -62,12 +62,21 @@ authoritative transition table — implement row by row, test row by row:
 | 10 | review any | again | lapses+1, ease=max(1.3, ease−0.20), state=relearning, step=0, due +10 min; store pendingInterval=max(1, round(interval×0.5)) in intervalDays |
 | 11 | relearning | good | state=review, dueDay=today+intervalDays (the halved one), reps unchanged |
 | 12 | relearning | again | stay, due +10 min (no extra lapse — one failure, one lapse) |
+| 12b | relearning | hard | GRADUATE conservatively: intervalDays=max(1, round(intervalDays × 0.5)) (halving the already-halved pending interval), state=review, dueDay=today+intervalDays, reps unchanged, **ease unchanged**, not a lapse |
 | 13 | any | — | after row application: ease clamped [1.3, 2.7]; interval clamped [1, 365]; if lapses ≥ 8 ⇒ isLeech=true, state=suspended |
 
+Every (state, rating) pair the engine can receive has a row — `schedule()`
+is total over `Rating`, so there is no "unreachable" combination to leave
+undefined. If a future change introduces a state, it needs a row per
+rating before any code is written.
+
 **Tests:** one named test per row (`sched: row 7 first review good gives 6 days`,
-…), plus `sched: ease never leaves [1.3,2.7] under 100 random ratings`,
+…, `sched: row 12b relearning hard graduates at half the pending interval`),
+plus `sched: ease never leaves [1.3,2.7] under 100 random ratings`,
 `sched: interval never exceeds 365`, `sched: leech at 8th lapse suspends`,
-`sched: schedule is pure (input object unmutated)`.
+`sched: schedule is pure (input object unmutated)`, and
+`sched: every (state, rating) pair returns a valid Progress` (a loop over
+all 5 states × 3 ratings asserting no throw, no NaN, interval ≥ 1).
 
 ## WS-C — session queue (`src/core/session.ts`)
 
