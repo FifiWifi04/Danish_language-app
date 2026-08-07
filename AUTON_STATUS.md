@@ -8,11 +8,11 @@ file from anywhere — iterations re-read it on every firing.
 
 | Gate | Meaning | State |
 |---|---|---|
-| G1 | Native review of the 30-card pilot + pronunciation guide + stød-critical audio spot-check passed (error rate recorded below; ≤~10 %) | **open** |
+| G1 | Native review of the 30-card pilot + pronunciation guide + stød-critical audio spot-check passed (error rate recorded below; ≤~10 %) | **open** — owner confirmed 2026-08-07 they WILL arrange the review (OWNER_INPUTS); the gate clears only when the review has happened and the error rate is recorded here |
 | G2 | Real audio clips generated (owner ran `build-audio` locally with a key) and committed | **open** |
 | G3 | Seven consecutive days of actual daily use, attested by the owner | **open** |
-| D-DEP1 | `idb` dependency approved | **pending** (recommended: yes — see OWNER_INPUTS.md) |
-| D-AUD1 | Audio provider chosen (recommended default: TTS-only v1) | **pending** |
+| D-DEP1 | `idb` dependency approved | **CONFIRMED yes** (owner, 2026-08-07 — item 5 builds on `idb`) |
+| D-AUD1 | Audio provider chosen (recommended default: TTS-only v1) | **CONFIRMED: ElevenLabs**, TTS-only v1 (owner, 2026-08-07 — `TTS_PROVIDER=elevenlabs` is the build-audio default) |
 
 ## Queue (top unblocked `todo` item goes first)
 

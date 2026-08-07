@@ -22,6 +22,11 @@ both.
   a public repo, and public + committed third-party audio is what makes
   Forvo a licensing problem. Default assumption: **public repo, TTS
   audio**.
+  *(Verification note 2026-08-07: the GitHub API reports
+  `Danish_language-app` as **public** — the private repo is
+  `Building_app`. Recorded decision: public repo + TTS audio; Pages
+  works on the free plan; Forvo stays parked. If you intended to make
+  THIS repo private, say so — that reopens the Pages question.)*
 - [every 3 hours] **Routine cadence + model** when arming the trigger (Building_app
   used every 6 h; this queue is ~24 items, so at 6 h it drains in roughly
   a week of clean firings).
