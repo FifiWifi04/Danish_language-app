@@ -18,7 +18,7 @@ file from anywhere — iterations re-read it on every firing.
 
 | # | Item | Plan / WS | State | Gate |
 |---|---|---|---|---|
-| 0 | Scaffold: Vite+TS strict+Vitest, app shell, `base` path, `docs/DECISIONS.md` seeded with the handoff's decisions | PHASE0 WS-A | todo | — |
+| 0 | Scaffold: Vite+TS strict+Vitest, app shell, `base` path, `docs/DECISIONS.md` seeded with the handoff's decisions | PHASE0 WS-A | done@37a1b64 | — |
 | 1 | CI (test+typecheck+build) + Pages deploy workflow | PHASE0 WS-B | todo | — (live-verify deferred until owner enables Pages) |
 | 2 | Day-number time core + seeded RNG (pure, tested) | PHASE1 WS-A | todo | — |
 | 3 | Scheduler transitions per the authoritative table (expected values hand-written first) | PHASE1 WS-B | todo | — |
@@ -52,6 +52,8 @@ file from anywhere — iterations re-read it on every firing.
 - 2026-08-07 — FIRST FIRING ABORTED at step 1: the session reported the
   build branch missing from origin and stopped without changes. Stopping
   was CORRECT behaviour. Diagnosis below; no code impact.
+- 2026-08-07 — item 0 (PHASE0 WS-A scaffold) done@37a1b64, tier-1
+  verified (npm test + tsc --noEmit + vite build all green), pushed.
 
 ## Solutions & fixes log
 
@@ -79,4 +81,17 @@ file from anywhere — iterations re-read it on every firing.
 
 ## DECISIONS-NEEDED (owner)
 
-(empty — see OWNER_INPUTS.md for the standing list)
+- **`validate` script names a runner (`vite-node`) that isn't on the
+  approved dev-dependency list.** `PLAN_PHASE0_HARNESS.md` WS-A specifies
+  `"validate": "vite-node scripts/validate-deck.ts"` verbatim, and item 0
+  now ships that exact script text — but `vite-node` is not installed
+  (it is not a transitive dep of `vite` or `vitest`; confirmed empty in
+  `package-lock.json`) and `CLAUDE.md` rule 4's approved dev list
+  (`vite, typescript, vitest, vite-plugin-pwa, @playwright/test`) doesn't
+  include it. This doesn't block item 0 (the script isn't invoked and
+  `scripts/validate-deck.ts` doesn't exist yet) but WILL block item 7
+  (PHASE2 WS-A, the content validator) per the STOP-on-new-dependency
+  rule. Owner needs to either approve `vite-node` as a dev dependency, or
+  the PLAN_PHASE2 executor needs a different runner (e.g. a plain
+  `node --experimental-strip-types` invocation, no extra dep). Flagging
+  now so item 7's firing isn't the one that discovers this cold.
