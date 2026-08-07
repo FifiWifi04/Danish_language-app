@@ -28,3 +28,14 @@ export interface Session {
   newIntroduced: number;
   reviewsDone: number;
 }
+
+export interface SessionLogEntry {
+  day: number;
+  mode: string;
+  reviewed: number;
+  newIntroduced: number;
+  againCount: number;
+  hardCount: number;
+  goodCount: number;
+  durationSec: number;
+}
