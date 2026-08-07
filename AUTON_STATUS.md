@@ -23,7 +23,7 @@ file from anywhere — iterations re-read it on every firing.
 | 2 | Day-number time core + seeded RNG (pure, tested) | PHASE1 WS-A | done@1fc5f2c | — |
 | 3 | Scheduler transitions per the authoritative table (expected values hand-written first) | PHASE1 WS-B | done@ad84b4d | — |
 | 4 | Session queue builder (caps, ordering, no-repeat, relearning re-entry) | PHASE1 WS-C | done@8cdfd8f | — |
-| 5 | Progress store: interface + memory adapter + IndexedDB adapter | PHASE1 WS-D | todo | D-DEP1 answered (either answer unblocks) |
+| 5 | Progress store: interface + memory adapter + IndexedDB adapter | PHASE1 WS-D | done@889545b | D-DEP1 answered (either answer unblocks) |
 | 6 | Simulation soak harness (2 y × 500 cards) wired into `npm test` | PHASE1 WS-E | todo | — |
 | 7 | Content schema + validator (`vocab`, `particle`, `pronunciation` types) + `npm run validate` in CI | PHASE2 WS-A | todo | — |
 | 8 | 30-card pilot deck, generated per the template, `"status":"draft"` | PHASE2 WS-B | todo | — |
@@ -124,6 +124,23 @@ file from anywhere — iterations re-read it on every firing.
   (row tests) and `tests/scheduler-invariants.test.ts` (property tests)
   to keep both under CLAUDE.md's ~200-line guideline. No UI/PWA/content
   touched, no new dependency, so tier 2/3 don't apply.
+- 2026-08-07 — item 5 (PHASE1 WS-D progress store) done@889545b, tier-1
+  verified (npm test: 34/34 incl. 3 named `store:` tests — roundtrip,
+  export/import identity, import rejects bad version; tsc --noEmit; vite
+  build all green), pushed. `src/core/store.ts` defines the
+  `ProgressStore` interface, `SessionLogEntry` type (added to
+  `src/core/types.ts` per the field list in `PLAN_PHASE3_APP.md` WS-C,
+  the only concrete definition available at this phase), and the
+  versioned `ExportPayload` shape — pure, no I/O, no DOM. `src/data/
+  memory.ts` implements `MemoryStore` (in-memory Map, used by every core
+  test). `src/data/idb.ts` implements `IdbStore` as thin delegation to
+  the approved `idb` package (D-DEP1 CONFIRMED yes) — DB `danmarksliv`,
+  stores `progress` (key `id`) and `sessionLog` (autoincrement); per the
+  plan it is NOT unit-tested here (no `fake-indexeddb`, no new dep) and
+  will be exercised by PHASE3 WS-A's Playwright smoke instead. Added
+  `idb@^8.0.3` as the sole runtime dependency (zero-dependency package;
+  lockfile diff is 9 lines). No UI/PWA/content touched, no scheduler
+  change, so tier 2/3 don't apply.
 
 ## Solutions & fixes log
 
