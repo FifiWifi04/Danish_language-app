@@ -12,7 +12,8 @@ index.html
 vite.config.ts        base: '/Danish_language-app/', vite-plugin-pwa registered later (WS = PHASE3 WS-B)
 tsconfig.json         "strict": true, "noUncheckedIndexedAccess": true
 package.json          scripts: dev, build ("tsc --noEmit && vite build"), preview,
-                      test ("vitest run"), validate ("vite-node scripts/validate-deck.ts")
+                      test ("vitest run"),
+                      validate ("vitest run tests/validate-content.test.ts")
 src/main.ts           mounts the shell
 src/ui/shell.ts       app shell: header "DanmarksLiv", a nav with tabs
                       Review · Udtale · Stats (buttons switching a single

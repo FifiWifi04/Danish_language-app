@@ -146,8 +146,14 @@ same failing test.
   smoke test). Offline/PWA claims are verified with Playwright's offline
   mode, not by assertion.
 - **Tier 3 (deploy):** after CI/Pages workstreams, check the live Pages
-  URL if reachable; otherwise record `live-verify DEFERRED` honestly.
-  Never mark VERIFIED LIVE without a real pass.
+  URL (https://fifiwifi04.github.io/Danish_language-app/) if reachable;
+  otherwise record `live-verify DEFERRED` honestly. Never mark VERIFIED
+  LIVE without a real pass. Note that `*.github.io` is NOT in the
+  environment's default Trusted domain list, so a fetch of the Pages URL
+  may return an egress-proxy block; that is an environment limit, not a
+  deploy failure. When it happens, the authoritative fallback is the
+  workflow run's own conclusion (GitHub Actions API / the run page) —
+  cite the run id, and say plainly that the page was not rendered.
 
 ## Step 7 — pre-commit revert check
 

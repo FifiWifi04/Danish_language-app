@@ -6,8 +6,10 @@ build step; the app only ever reads committed MP3s via a manifest.
 
 ## WS-A — build script + manifest
 
-`scripts/build-audio.ts` (run: `npm run build-audio`; add the script
-entry). Contract:
+`scripts/build-audio.mjs` — **plain ESM JavaScript, not TypeScript**, so
+the owner can run it with bare `node` and no runner dependency exists
+(CLAUDE.md rule 4b). Add `"build-audio": "node scripts/build-audio.mjs"`.
+Contract:
 
 - Reads every content file; collects utterances: vocab `danish`,
   particle pair sentences (`withoutIt`, `withIt`), pronunciation
@@ -20,9 +22,12 @@ entry). Contract:
   `scripts/audio-manifest.json` maps `text → filename` plus `{voice,
   provider, generatedAt}`. Anything already in the manifest with an
   existing file is **skipped** — unchanged cards are never re-billed.
-- Provider calls are isolated in `scripts/providers/<name>.ts` with a
+- Provider calls are isolated in `scripts/providers/<name>.mjs` with a
   `synthesize(text, voice, key): Promise<Uint8Array>` signature; a
-  `fake` provider returns a 1-byte buffer for tests.
+  `fake` provider returns a 1-byte buffer for tests. Default provider:
+  `elevenlabs` (D-AUD1 confirmed). Pure helpers (utterance collection,
+  hashing, manifest diffing) are exported from the same `.mjs` files so
+  Vitest can import them directly.
 - Exit non-zero listing failures; partial progress is kept (manifest
   written after each success).
 

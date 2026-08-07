@@ -34,16 +34,26 @@ note_pl, soundTags?` — contrastive minimal pairs per HANDOFF §3.6.
 
 **pronunciation item**: see `PLAN_PRONUNCIATION.md` WS-A.
 
-`scripts/validate-deck.ts` (run via `npm run validate`, wired into CI in
-this WS): validates every field above, uniqueness of ids, contentHash
-correctness (recompute and compare), soundTags referential integrity,
-emoji-ness of emojiAnchor, and that **no file mixes draft and reviewed
-edits in one PR** is NOT checkable here — that's the firewall rule in
-CLAUDE.md instead.
+**Runner (decided 2026-08-07 — CLAUDE.md rule 4b; the plans originally
+said `vite-node`, which is not an approved dependency):** the validation
+logic lives in `scripts/validate-content.mjs` as pure exported functions
+taking parsed JSON and returning `{ok, errors[]}` — no TS, no runner
+dependency. `tests/validate-content.test.ts` reads every `content/*.json`
+from disk, feeds them through it, and asserts zero errors;
+`npm run validate` is exactly that one test file, and `npm test` picks it
+up automatically. Wire nothing extra into CI — `npm test` already covers
+it.
+
+It validates every field above, uniqueness of ids across ALL content
+files, contentHash correctness (recompute and compare), soundTags
+referential integrity, and emoji-ness of emojiAnchor. Note what it does
+NOT check: that a PR mixes draft and reviewed edits. That's the content
+firewall in `CLAUDE.md` rule 3 — a rule for agents, not a schema check.
 
 **Tests:** `validate: accepts the fixture deck`, `validate: rejects
 duplicate id`, `validate: rejects bad contentHash`, `validate: rejects
-cloze without target`, `validate: rejects unknown soundTag`.
+cloze without target`, `validate: rejects unknown soundTag`, plus the
+whole-repo assertion `validate: every content file is clean`.
 
 ## WS-B — the 30-card pilot deck
 

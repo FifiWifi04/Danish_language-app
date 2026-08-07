@@ -29,10 +29,17 @@ npm run preview      # serve the built bundle for smoke tests
    entries carry `"status": "reviewed"`. New generated content is always
    `"status": "draft"`. If reviewed content looks wrong, flag it in
    `AUTON_STATUS.md` (DECISIONS-NEEDED) — do not fix it.
-4. **No new dependencies.** The approved runtime list is: `idb` (if
-   D-DEP1 is confirmed in `OWNER_INPUTS.md`). Dev list: vite, typescript,
-   vitest, vite-plugin-pwa, @playwright/test. Anything else: STOP and
+4. **No new dependencies.** The approved runtime list is: `idb` (D-DEP1
+   CONFIRMED yes, 2026-08-07). Dev list: vite, typescript, vitest,
+   happy-dom, vite-plugin-pwa, @playwright/test. Anything else: STOP and
    flag.
+4b. **There is no TypeScript script runner, and we are not adding one**
+   (decision 2026-08-07, replacing the `vite-node` reference the plans
+   originally carried). Therefore: `src/` is TypeScript, and **`scripts/`
+   is plain ESM JavaScript (`.mjs`) runnable with bare `node`**. Anything
+   in `scripts/` that deserves tests exports pure functions from a
+   `.mjs` module, and a Vitest test imports it — Vitest reads plain JS
+   fine. `npm run validate` is a Vitest run, not a standalone binary.
 5. **Content and progress never mix.** Progress lives in IndexedDB keyed
    by card `id`; content files are read-only at runtime. Deck updates
    must never require a progress migration.

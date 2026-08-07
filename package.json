@@ -8,7 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "validate": "vite-node scripts/validate-deck.ts"
+    "validate": "vitest run tests/validate-content.test.ts"
   },
   "devDependencies": {
     "happy-dom": "^20.11.1",

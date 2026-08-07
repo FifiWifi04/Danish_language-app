@@ -98,7 +98,19 @@ file from anywhere — iterations re-read it on every firing.
 
 ## DECISIONS-NEEDED (owner)
 
-- **`validate` script names a runner (`vite-node`) that isn't on the
+- ✅ **RESOLVED 2026-08-07 — no TS script runner is being added.** Good
+  catch; the flag was correct and caught this before item 7 hit it cold.
+  Decision (now `CLAUDE.md` rule 4b): `src/` is TypeScript, `scripts/` is
+  plain ESM JavaScript (`.mjs`) runnable with bare `node`. `npm run
+  validate` is `vitest run tests/validate-content.test.ts` (vitest is
+  already approved and reads plain JS, so the validator's pure functions
+  live in `scripts/validate-content.mjs` and the test imports them);
+  `npm run build-audio` will be `node scripts/build-audio.mjs`. The
+  shipped `package.json` script has been corrected, and PLAN_PHASE0 WS-A,
+  PLAN_PHASE2 WS-A, and PLAN_PHASE4 WS-A now specify this. No new
+  dependency, item 7 unblocked.
+
+- ~~**`validate` script names a runner (`vite-node`) that isn't on the
   approved dev-dependency list.** `PLAN_PHASE0_HARNESS.md` WS-A specifies
   `"validate": "vite-node scripts/validate-deck.ts"` verbatim, and item 0
   now ships that exact script text — but `vite-node` is not installed
@@ -111,4 +123,5 @@ file from anywhere — iterations re-read it on every firing.
   rule. Owner needs to either approve `vite-node` as a dev dependency, or
   the PLAN_PHASE2 executor needs a different runner (e.g. a plain
   `node --experimental-strip-types` invocation, no extra dep). Flagging
-  now so item 7's firing isn't the one that discovers this cold.
+  now so item 7's firing isn't the one that discovers this cold.~~
+  *(superseded by the resolution above — kept for the record)*
