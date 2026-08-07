@@ -19,7 +19,7 @@ file from anywhere — iterations re-read it on every firing.
 | # | Item | Plan / WS | State | Gate |
 |---|---|---|---|---|
 | 0 | Scaffold: Vite+TS strict+Vitest, app shell, `base` path, `docs/DECISIONS.md` seeded with the handoff's decisions | PHASE0 WS-A | done@37a1b64 | — |
-| 1 | CI (test+typecheck+build) + Pages deploy workflow | PHASE0 WS-B | todo | — (live-verify deferred until owner enables Pages) |
+| 1 | CI (test+typecheck+build) + Pages deploy workflow | PHASE0 WS-B | done@eb6b9c2 | — (live-verify deferred until owner enables Pages) |
 | 2 | Day-number time core + seeded RNG (pure, tested) | PHASE1 WS-A | todo | — |
 | 3 | Scheduler transitions per the authoritative table (expected values hand-written first) | PHASE1 WS-B | todo | — |
 | 4 | Session queue builder (caps, ordering, no-repeat, relearning re-entry) | PHASE1 WS-C | todo | — |
@@ -54,6 +54,13 @@ file from anywhere — iterations re-read it on every firing.
   was CORRECT behaviour. Diagnosis below; no code impact.
 - 2026-08-07 — item 0 (PHASE0 WS-A scaffold) done@37a1b64, tier-1
   verified (npm test + tsc --noEmit + vite build all green), pushed.
+- 2026-08-07 — item 1 (PHASE0 WS-B CI + Pages deploy) done@eb6b9c2,
+  tier-1 verified locally and confirmed on GitHub Actions: CI run
+  succeeded (build 31168074406). Deploy run (31168074338) built and
+  uploaded the Pages artifact successfully; only the final
+  `actions/deploy-pages@v4` step failed, consistent with Pages not yet
+  being enabled in repo settings (G2/OWNER_INPUTS one-click step) —
+  live-verify DEFERRED, not a workflow defect. No repo settings changed.
 
 ## Solutions & fixes log
 
