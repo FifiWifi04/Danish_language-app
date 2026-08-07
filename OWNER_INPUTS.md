@@ -27,17 +27,19 @@ both.
   `Building_app`. Recorded decision: public repo + TTS audio; Pages
   works on the free plan; Forvo stays parked. If you intended to make
   THIS repo private, say so — that reopens the Pages question.)*
-- [every 3 hours] **Routine cadence + model** when arming the trigger (Building_app
-  used every 6 h; this queue is ~24 items, so at 6 h it drains in roughly
-  a week of clean firings).
+- [every 3 hours, Sonnet 5, owner arms it] **Routine cadence + model**
+  when arming the trigger (Building_app used every 6 h; this queue is
+  ~24 items, so at 3 h it drains in roughly 3–4 days of clean firings).
 
 ## One-time GitHub settings (one click each)
 
-- [ ] Enable **GitHub Pages** with source "GitHub Actions" (repo →
-  Settings → Pages) — item 1's deploy stays `live-verify DEFERRED` until
-  this is done.
-- [Yes] Optional but recommended: **branch protection** on the build branch
-  with CI required, per HANDOFF §6.
+- [Done 2026-08-07] Enable **GitHub Pages** with source "GitHub Actions"
+  (repo → Settings → Pages) — item 1's deploy can live-verify.
+- [Yes] Optional but recommended: **branch protection** — on `main`
+  ONLY. The build branch (`claude/danish-app-design-review-z48b7e`) must
+  stay directly pushable with no PR requirement, or every firing's push
+  is rejected and the routine stalls. (Pushes verified working
+  2026-08-07.)
 
 ## Recurring / gate clearances
 
