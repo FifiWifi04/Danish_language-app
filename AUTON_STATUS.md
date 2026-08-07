@@ -20,7 +20,7 @@ file from anywhere — iterations re-read it on every firing.
 |---|---|---|---|---|
 | 0 | Scaffold: Vite+TS strict+Vitest, app shell, `base` path, `docs/DECISIONS.md` seeded with the handoff's decisions | PHASE0 WS-A | done@37a1b64 | — |
 | 1 | CI (test+typecheck+build) + Pages deploy workflow | PHASE0 WS-B | done@eb6b9c2 | — (deploy-pages CONFIRMED SUCCEEDING 2026-08-07 after owner enabled Pages; see log) |
-| 2 | Day-number time core + seeded RNG (pure, tested) | PHASE1 WS-A | todo | — |
+| 2 | Day-number time core + seeded RNG (pure, tested) | PHASE1 WS-A | done@1fc5f2c | — |
 | 3 | Scheduler transitions per the authoritative table (expected values hand-written first) | PHASE1 WS-B | todo | — |
 | 4 | Session queue builder (caps, ordering, no-repeat, relearning re-entry) | PHASE1 WS-C | todo | — |
 | 5 | Progress store: interface + memory adapter + IndexedDB adapter | PHASE1 WS-D | todo | D-DEP1 answered (either answer unblocks) |
@@ -71,6 +71,12 @@ file from anywhere — iterations re-read it on every firing.
   succeeded per GitHub Actions" rather than "page visually confirmed
   live" — the owner should do one visual check when convenient. No repo
   settings changed by this session.
+- 2026-08-07 — item 2 (PHASE1 WS-A day-number time core + seeded RNG)
+  done@1fc5f2c, tier-1 verified (npm test: 8/8 incl. the 4 named
+  `time:` tests and 2 named `rng:` tests; tsc --noEmit; vite build all
+  green), pushed. `src/core/time.ts` and `src/core/rng.ts` implement the
+  plan's WS-A signatures exactly; no scheduler/UI/content touched, no
+  new dependency, so tier 2/3 don't apply.
 
 ## Solutions & fixes log
 
