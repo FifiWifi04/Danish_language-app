@@ -26,12 +26,12 @@ file from anywhere — iterations re-read it on every firing.
 | 5 | Progress store: interface + memory adapter + IndexedDB adapter | PHASE1 WS-D | done@889545b | D-DEP1 answered (either answer unblocks) |
 | 6 | Simulation soak harness (2 y × 500 cards) wired into `npm test` | PHASE1 WS-E | done@63a0b34 | — |
 | 7 | Content schema + validator (`vocab`, `particle`, `pronunciation` types) + `npm run validate` in CI | PHASE2 WS-A | done@64395f2 | — |
-| 8 | 30-card pilot deck, generated per the template, `"status":"draft"` | PHASE2 WS-B | todo | — |
+| 8 | 30-card pilot deck, generated per the template, `"status":"draft"` | PHASE2 WS-B | done@2975a0d | — |
 | 9 | Mode A review UI (reveal + Again/Hard/Good), draft badge on draft cards | PHASE3 WS-A | todo | — |
 | 10 | PWA: manifest, precache, offline, update-available toast | PHASE3 WS-B | todo | — |
 | 11 | Stats view + append-only session log + streak/due counts | PHASE3 WS-C | todo | — |
 | 12 | Progress export/import (JSON file) + stale-backup nudge | PHASE3 WS-D | todo | — |
-| 13 | Pronunciation guide content file (~12 phenomena, mechanics, DRAFT) | PRON WS-A | todo | — |
+| 13 | Pronunciation guide content file (~12 phenomena, mechanics, DRAFT) + add `soundTags` to the 10 sound-coverage pilot cards (deferred from item 8 — see its log entry) | PRON WS-A | todo | — |
 | 14 | Udtale tab UI (guide browser) + `soundTags` links from cards | PRON WS-B | todo | — |
 | 15 | Audio build script + manifest + fake-provider tests (no real key use) | PHASE4 WS-A | todo | — |
 | 16 | Audio playback wiring in Mode A (manifest-driven, silent degrade) | PHASE4 WS-B | todo | — |
@@ -199,6 +199,46 @@ file from anywhere — iterations re-read it on every firing.
   UI/PWA/scheduler-behaviour/dependency touched. `content/` itself is
   still absent — that's item 8 (PHASE2 WS-B, the 30-card pilot deck),
   correctly left for the next firing per the one-workstream bound.
+- 2026-08-08 — item 8 (PHASE2 WS-B 30-card pilot deck) done@2975a0d,
+  tier-1 verified (npm test: 48/48 across 9 files incl. all 7 `validate:`
+  tests now running against real content; tsc --noEmit; vite build;
+  `npm run validate` all green), pushed. `content/deck.v1.json` has
+  exactly 30 vocab items, every one `"status":"draft"`, composed per the
+  plan: 10 survival nouns/verbs (hej, tak, undskyld, kaffe, rundstykke,
+  dankort, at hedde, at bo, at arbejde, brød), 10 conversational
+  verbs/phrases (at snakke, at synes, at gide, "det ved jeg ikke",
+  "hvad så?", "det er fint", at hygge, at glæde sig, "vi ses", "hav det
+  godt"), 10 sound-coverage items (stød: hund/mand/ven; soft d:
+  mad/gade/glad; y/ø: ny/øl; vocalised r: mor/her — 3+3+2+2, meeting the
+  "at least" minimums exactly). 19/30 cards carry a `clozeSentence` (plan
+  requires ≥15); `clozeTarget` uses inflected forms where natural
+  (hedder, bor, arbejder, gider, glæder mig) per the field's own
+  definition. `grammarNote` added to 7 cards only where Polish/Danish
+  genuinely diverge (tak false-friend, et-word gender, infinitive "at",
+  synes/tro/tænke three-way split, no Polish equivalent for gide/hygge,
+  silent hv-, reflexive sig + V2) — the rest carry none, per the
+  authoring rule. `phoneticPl` uses Polish orthography throughout,
+  including "ł" for blødt d (soft d) following the sound's own
+  description in `PLAN_PRONUNCIATION.md` ("resembles a dark ł/l to
+  Polish ears") and "a"-glide spellings (moa, hea) for vocalised r.
+  **Deliberate deviation from the plan text, logged here rather than
+  silently applied:** the 10 sound-coverage cards do NOT carry
+  `soundTags` yet, though WS-B's text says to add them. Reality check
+  (AUTON_ORDERS step 0) — the validator built in item 7 checks
+  `soundTags` referential integrity against pronunciation item ids
+  collected across ALL `content/*.json` files, and
+  `content/pronunciation.v1.json` doesn't exist (that's item 13, PRON
+  WS-A, still `todo`, queued *after* this item). Adding `soundTags` now
+  would fail `npm run validate` outright — not a product-judgement
+  ambiguity like item 3's relearning gap, just a hard forward
+  dependency created by queue ordering (item 8 before item 13). Treated
+  as a small, mechanical, in-scope self-heal per the self-healing
+  mandate rather than a STOP-and-flag: omitted the field, kept
+  everything else in the WS as specified, and added a note to item 13's
+  queue row above so the tags get attached when the pronunciation
+  content lands (ids should follow `PLAN_PRONUNCIATION.md` WS-A's slugs:
+  stoed → hund/mand/ven, soft-d → mad/gade/glad, y/oe → ny/oel, r-final
+  → mor/her). No UI/PWA/scheduler/dependency touched.
 
 ## Solutions & fixes log
 
