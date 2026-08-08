@@ -30,7 +30,7 @@ file from anywhere — iterations re-read it on every firing.
 | 9 | Mode A review UI (reveal + Again/Hard/Good), draft badge on draft cards | PHASE3 WS-A | done@cc14779 | — |
 | 10 | PWA: manifest, precache, offline, update-available toast | PHASE3 WS-B | done@35b0a16 | — |
 | 11 | Stats view + append-only session log + streak/due counts | PHASE3 WS-C | done@f11292c | — |
-| 12 | Progress export/import (JSON file) + stale-backup nudge | PHASE3 WS-D | todo | — |
+| 12 | Progress export/import (JSON file) + stale-backup nudge | PHASE3 WS-D | done@00548ed | — |
 | 13 | Pronunciation guide content file (~12 phenomena, mechanics, DRAFT) + add `soundTags` to the 10 sound-coverage pilot cards (deferred from item 8 — see its log entry) | PRON WS-A | todo | — |
 | 14 | Udtale tab UI (guide browser) + `soundTags` links from cards | PRON WS-B | todo | — |
 | 15 | Audio build script + manifest + fake-provider tests (no real key use) | PHASE4 WS-A | todo | — |
@@ -385,6 +385,28 @@ file from anywhere — iterations re-read it on every firing.
   plain "Leeches: N" count instead; when item 20 lands it should turn this
   into a real link/anchor. No content/scheduler/dependency touched; the
   content firewall wasn't in play (no `content/` file edited).
+- 2026-08-08 — item 12 (PHASE3 WS-D export/import) done@00548ed, tier-1
+  verified (npm test: 59/59; tsc --noEmit; vite build; npm run validate
+  7/7 all green) AND tier-2 verified (Playwright 4/4, incl. new
+  `tests/e2e/backup.spec.ts` — completes a 3-card session, clicks Export
+  backup and captures the real downloaded file, clears progress via the
+  e2e-exposed store, clicks Import backup (file input + native confirm
+  dialog accepted), and asserts the same 3 fixture ids come back from
+  `store.all()`; existing `review.spec.ts`, `pwa-offline.spec.ts`,
+  `stats.spec.ts` still green). New `src/ui/backup.ts`
+  (`renderBackupControls`) wired into `src/ui/stats.ts` right after the
+  existing backup-status line: **Export backup** builds the Blob +
+  `a[download]` (`danmarksliv-backup-<date>.json`, ISO date) per the
+  plan and stamps `backup-status.ts`'s existing `LAST_EXPORT_KEY` on
+  click; **Import backup** is a hidden file input behind a button,
+  gated by `window.confirm(...)` stating it replaces current progress,
+  then calls `store.importAll` and surfaces the thrown error's message
+  verbatim (or "Import complete.") in a status line — no separate
+  validation was added here since `ProgressStore.importAll` (both
+  `MemoryStore` and `IdbStore`, done in item 5) already parses/checks
+  the version before writing anything, so a bad file never partially
+  imports. No core/scheduler/content/dependency touched; the content
+  firewall wasn't in play.
 
 ## Solutions & fixes log
 
