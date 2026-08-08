@@ -28,7 +28,7 @@ file from anywhere — iterations re-read it on every firing.
 | 7 | Content schema + validator (`vocab`, `particle`, `pronunciation` types) + `npm run validate` in CI | PHASE2 WS-A | done@64395f2 | — |
 | 8 | 30-card pilot deck, generated per the template, `"status":"draft"` | PHASE2 WS-B | done@2975a0d | — |
 | 9 | Mode A review UI (reveal + Again/Hard/Good), draft badge on draft cards | PHASE3 WS-A | done@cc14779 | — |
-| 10 | PWA: manifest, precache, offline, update-available toast | PHASE3 WS-B | todo | — |
+| 10 | PWA: manifest, precache, offline, update-available toast | PHASE3 WS-B | done@35b0a16 | — |
 | 11 | Stats view + append-only session log + streak/due counts | PHASE3 WS-C | todo | — |
 | 12 | Progress export/import (JSON file) + stale-backup nudge | PHASE3 WS-D | todo | — |
 | 13 | Pronunciation guide content file (~12 phenomena, mechanics, DRAFT) + add `soundTags` to the 10 sound-coverage pilot cards (deferred from item 8 — see its log entry) | PRON WS-A | todo | — |
@@ -301,6 +301,56 @@ file from anywhere — iterations re-read it on every firing.
   age once WS-D starts writing that key and 7 days have actually passed).
   No UI/scheduler/content/dependency-approval-list touched beyond the
   above; `content/` itself untouched (firewall respected).
+- 2026-08-08 — item 10 (PHASE3 WS-B PWA: manifest, precache, offline,
+  update toast) done@35b0a16, tier-1 verified (npm test: 53/53; tsc
+  --noEmit; vite build; npm run validate all green) AND tier-2 verified
+  (Playwright: 2/2, incl. new `tests/e2e/pwa-offline.spec.ts` — load,
+  await `navigator.serviceWorker.ready`, `context.setOffline(true)`,
+  reload, assert the 3-tab nav renders and a `.review-card` appears from
+  the precached bundle; existing `review.spec.ts` still green).
+  `vite-plugin-pwa@1.3.0` added (pre-approved on CLAUDE.md's dev list,
+  not previously installed; confirmed peer-compatible with this repo's
+  `vite@^8.2.1` before installing). `vite.config.ts` wires `VitePWA` with
+  `registerType:'prompt'`, `injectRegister:false` (registration is done
+  by hand in `src/pwa.ts` so the update/offline-ready callbacks can drive
+  custom toasts), manifest (name "DanmarksLiv", da-flag-red
+  `#C8102E` theme/background, `start_url`/`scope` pinned to the Pages
+  base path, maskable icon pair), and workbox `globPatterns` covering
+  `js/css/html/png/svg/json/mp3` with `globIgnores:['e2e-fixtures/**']`
+  so the Playwright fixture deck never ships in the real precache.
+  Verified in the built manifest afterward: `content/deck.v1.json` isn't
+  a separate precache entry because item 9 already bundles it straight
+  into the JS chunk (which is precached by default) rather than
+  fetching it at runtime — the plan's "precache includes content/*.json"
+  outcome is already satisfied, just via item 9's mechanism instead of a
+  standalone file; `public/audio/**` has nothing to match yet (items
+  15/16 still `todo`) but the `mp3` extension is already in
+  `globPatterns` so no further `vite.config.ts` change will be needed
+  when audio lands. `src/pwa.ts` calls the plugin's `registerSW` with
+  `onNeedRefresh` → toast "New version — reload" whose action calls
+  `updateSW(true)` (the library's own `controlling`-event listener does
+  the actual reload — no manual `location.reload()` needed) and
+  `onOfflineReady` → one-time "works offline now" toast, auto-dismissing
+  after 5 s; wired into `src/main.ts`'s `bootstrap()` after
+  `renderShell`. No CSS was added for the toast (the app has no
+  stylesheet anywhere yet; adding one was out of scope for this WS).
+  **Deliberate, documented deviation (self-healing mandate, small and
+  in-scope):** the plan's WS-B text asks for an "emoji-on-red" icon pair.
+  Rasterizing an actual emoji glyph needs font/canvas rendering (canvas,
+  sharp, resvg, satori, …), none of which is on CLAUDE.md rule 4's
+  approved dependency list — adding one would itself be a STOP-and-flag
+  case. Wrote `scripts/png-encoder.mjs` (a ~90-line dependency-free PNG
+  encoder over Node's built-in `zlib`) and `scripts/generate-icons.mjs`
+  (draws a 192/512 pair) and substituted a hand-drawn **off-center Nordic
+  cross** (Dannebrog-style, not a centered plus/Swiss cross — verified by
+  eye on the 512px output) on the theme red for the emoji glyph — simpler,
+  dependency-free, and arguably more on-theme for a Danish-learning app
+  than an arbitrary emoji would have been. Cross arm tips kept 18% clear
+  of every edge (safe-zone circle only requires ≥10%) so the maskable
+  crop never clips them. Both scripts are checked in and rerunnable
+  (`node scripts/generate-icons.mjs`), matching the plan's "with a
+  script, checked in." No UI(other tabs)/scheduler/content/progress-store
+  touched.
 
 ## Solutions & fixes log
 
