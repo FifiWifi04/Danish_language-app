@@ -5,6 +5,7 @@ import { materializeProgress } from '../core/progress';
 import { computeStreak, computeDueCounts, computeRetention, last30DaysBars, countLeeches } from '../core/stats';
 import { dayNumber, minuteNumber } from '../core/time';
 import { backupStatusText } from './backup-status';
+import { renderBackupControls } from './backup';
 
 const DEFAULT_CAPS = { newPerDay: 20, reviewsPerDay: 200 };
 const RETENTION_WINDOW_DAYS = 30;
@@ -49,6 +50,7 @@ async function start(wrapper: HTMLElement, store: ProgressStore, deck: VocabItem
   // count rather than a link — linking to a nonexistent tab would 404.
   wrapper.appendChild(makeLine(`Leeches: ${String(leeches)}`));
   wrapper.appendChild(makeLine(backupStatusText(nowMs)));
+  renderBackupControls(wrapper, store);
   wrapper.appendChild(renderSessionList(log));
 }
 
