@@ -27,7 +27,7 @@ file from anywhere — iterations re-read it on every firing.
 | 6 | Simulation soak harness (2 y × 500 cards) wired into `npm test` | PHASE1 WS-E | done@63a0b34 | — |
 | 7 | Content schema + validator (`vocab`, `particle`, `pronunciation` types) + `npm run validate` in CI | PHASE2 WS-A | done@64395f2 | — |
 | 8 | 30-card pilot deck, generated per the template, `"status":"draft"` | PHASE2 WS-B | done@2975a0d | — |
-| 9 | Mode A review UI (reveal + Again/Hard/Good), draft badge on draft cards | PHASE3 WS-A | todo | — |
+| 9 | Mode A review UI (reveal + Again/Hard/Good), draft badge on draft cards | PHASE3 WS-A | done@cc14779 | — |
 | 10 | PWA: manifest, precache, offline, update-available toast | PHASE3 WS-B | todo | — |
 | 11 | Stats view + append-only session log + streak/due counts | PHASE3 WS-C | todo | — |
 | 12 | Progress export/import (JSON file) + stale-backup nudge | PHASE3 WS-D | todo | — |
@@ -239,6 +239,68 @@ file from anywhere — iterations re-read it on every firing.
   content lands (ids should follow `PLAN_PRONUNCIATION.md` WS-A's slugs:
   stoed → hund/mand/ven, soft-d → mad/gade/glad, y/oe → ny/oel, r-final
   → mor/her). No UI/PWA/scheduler/dependency touched.
+
+- 2026-08-08 — item 9 (PHASE3 WS-A Mode A review UI) done@cc14779, tier-1
+  verified (npm test: 53/53 across 11 files, incl. 2 named `progress:`
+  tests and 3 named `stats:` tests; tsc --noEmit; vite build; `npm run
+  validate` all green) AND tier-2 verified (Playwright:
+  `tests/e2e/review.spec.ts` completes a 3-card session against the new
+  `?e2eDeck=1` fixture deck at `public/e2e-fixtures/deck.fixture.json`,
+  asserts the queue empties, then reads `exportAll()` back in-page and
+  confirms all 3 fixture ids got a Progress row at `state:'learning'`;
+  also eyeballed the built preview manually via a Playwright screenshot —
+  front shows danish+emoji+DRAFT badge, tap reveals english/polish/
+  phoneticPl/disabled audio button/Again-Hard-Good row all ≥48px tall).
+  `src/ui/review.ts` (orchestration: load store+deck, `buildSession`,
+  iterate the fixed queue, `schedule()` + `store.put` per rating, session
+  log + end screen) and `src/ui/review-card.ts` (one-card rendering, kept
+  separate to stay under CLAUDE.md's ~200-line guideline — 111 + 104
+  lines) implement the plan's Review tab exactly: reveal on tap or
+  Space/Enter, draft badge, "content changed — re-check" badge (cleared
+  on the next Good by re-stamping `contentHash` before the `put`), session
+  end screen with counts done, streak, and a backup-age nudge.
+  Two new pure `src/core/` modules, both unit-tested: `progress.ts`
+  (`newProgress`/`materializeProgress` — a content item with no stored row
+  gets a synthesized `state:'new'` row, matching how `session.test.ts`'s
+  `buildSession` already expected `all: Progress[]` to be a full union) and
+  `stats.ts` (`computeStreak`, consecutive day numbers with `reviewed>=1`
+  ending at `today` — the plan's WS-C stats view will reuse this rather
+  than reimplement it). `src/data/content.ts` loads the real
+  `content/deck.v1.json` via a direct ES/JSON import (bundled, so no
+  runtime fetch or CORS surface for the production path; `tsconfig.json`
+  gained `resolveJsonModule` for this) — chosen over a fetch-from-public
+  design because it's simpler and the plan doesn't pin a loading
+  mechanism; WS-B (PWA precache) can decide when it lands whether
+  precaching content separately is still needed once it's already inside
+  the precached JS bundle. `renderShell`/`renderMain` (`src/ui/shell.ts`)
+  now take `{store, deck}` as explicit deps instead of constructing an
+  `IdbStore` themselves, so `tests/smoke.test.ts` and Playwright can both
+  inject a `MemoryStore`/fixture without touching real IndexedDB;
+  `src/main.ts` does the real wiring (`IdbStore` + `loadVocabDeck` off
+  `location.search`) and, only behind `?e2eDeck=1`, exposes the store on
+  `window.__e2eStore` so the e2e spec can call `exportAll()` in-page —
+  gated by the same query flag as the fixture, so production loads never
+  do this.
+  **New dev dependency `@playwright/test`** (on CLAUDE.md's pre-approved
+  list, not previously installed) — added via `npm install --save-dev`,
+  wired as `npm run test:e2e` / `playwright.config.ts`.
+  `playwright.config.ts`'s `launchOptions.executablePath` only points at
+  this build sandbox's pre-installed Chromium
+  (`/opt/pw-browsers/chromium`) when `existsSync` finds it there — guarded
+  so a real CI runner or the owner's machine, which won't have that path,
+  falls back to Playwright's own `playwright install`/download instead of
+  inheriting a dead path. `test-results/` and `playwright-report/` added
+  to `.gitignore`.
+  **Deliberate, documented deviation (self-healing mandate, small and
+  in-scope):** the plan's session-end "backup is N days old" nudge has no
+  data source yet — WS-D (export/import) is still `todo` and hasn't
+  started writing a last-export timestamp anywhere. Rather than invent
+  fake backup data or block WS-A on WS-D, `review.ts` reads an
+  as-yet-unwritten `localStorage['danmarksliv:lastExportAt']` key and
+  shows "you haven't backed up yet" when it's absent (only showing an
+  age once WS-D starts writing that key and 7 days have actually passed).
+  No UI/scheduler/content/dependency-approval-list touched beyond the
+  above; `content/` itself untouched (firewall respected).
 
 ## Solutions & fixes log
 
