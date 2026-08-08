@@ -24,7 +24,7 @@ file from anywhere — iterations re-read it on every firing.
 | 3 | Scheduler transitions per the authoritative table (expected values hand-written first) | PHASE1 WS-B | done@ad84b4d | — |
 | 4 | Session queue builder (caps, ordering, no-repeat, relearning re-entry) | PHASE1 WS-C | done@8cdfd8f | — |
 | 5 | Progress store: interface + memory adapter + IndexedDB adapter | PHASE1 WS-D | done@889545b | D-DEP1 answered (either answer unblocks) |
-| 6 | Simulation soak harness (2 y × 500 cards) wired into `npm test` | PHASE1 WS-E | todo | — |
+| 6 | Simulation soak harness (2 y × 500 cards) wired into `npm test` | PHASE1 WS-E | done@63a0b34 | — |
 | 7 | Content schema + validator (`vocab`, `particle`, `pronunciation` types) + `npm run validate` in CI | PHASE2 WS-A | todo | — |
 | 8 | 30-card pilot deck, generated per the template, `"status":"draft"` | PHASE2 WS-B | todo | — |
 | 9 | Mode A review UI (reveal + Again/Hard/Good), draft badge on draft cards | PHASE3 WS-A | todo | — |
@@ -141,6 +141,28 @@ file from anywhere — iterations re-read it on every firing.
   `idb@^8.0.3` as the sole runtime dependency (zero-dependency package;
   lockfile diff is 9 lines). No UI/PWA/content touched, no scheduler
   change, so tier 2/3 don't apply.
+- 2026-08-08 — item 6 (PHASE1 WS-E simulation soak harness) done@63a0b34,
+  tier-1 verified (npm test: 41/41 across 8 files incl. the 7 named `sim:`
+  tests; tsc --noEmit; vite build all green), pushed. Split per plan into
+  `tests/simulation-harness.ts` (the pure seeded runner: 500 synthetic
+  `card-N` ids, `contentOrder` all priority 1 ordered by index, 730 days
+  of build-session/answer-everything/advance-day using the existing
+  `buildSession`/`schedule`/`mulberry32`, learner ratings drawn
+  good p=0.85 / hard p=0.05 / again p=0.10 exactly per the plan) and
+  `tests/simulation.test.ts` (the named assertions), keeping both under
+  CLAUDE.md's ~200-line guideline; the harness file has no `.test.ts`
+  suffix so vitest's `tests/**/*.test.ts` include doesn't pick it up as
+  its own suite. All six plan assertions implemented: no NaN / no interval
+  outside [1,365] on review cards, ease within [1.3,2.7] every card every
+  day, no starvation (gap between a card's consecutive appearances ≤ its
+  post-review interval + 30 days, skipped once a card is suspended since
+  leeches are expected to stop appearing), no duplicate card within one
+  session, byte-identical `JSON.stringify` of final progress across two
+  runs of the same seed, and a wall-clock assertion on the first run.
+  Full suite runs in ~2 s (measured via `performance.now()` in the test,
+  not `src/core` — core stays pure, no `Date.now()`/`Math.random()` was
+  added there). No UI/PWA/content/scheduler-behaviour/dependency touched,
+  so tier 2/3 don't apply.
 
 ## Solutions & fixes log
 
