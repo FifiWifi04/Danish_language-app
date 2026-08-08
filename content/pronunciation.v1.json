@@ -1,0 +1,287 @@
+{
+  "v": 1,
+  "type": "pronunciation",
+  "items": [
+    {
+      "id": "stoed",
+      "status": "draft",
+      "title_da": "Stød",
+      "title_pl": "Zwarcie krtaniowe (stød)",
+      "whatItIs_pl": "Stød to krótkie „zacinanie” głosu w środku samogłoski lub sylaby, coś w rodzaju delikatnego skrzypnięcia. To nie jest pełne zatrzymanie dźwięku — głos leci dalej, tylko na moment traci równą, czystą barwę. W duńskim odróżnia pary słów, które inaczej brzmiałyby identycznie.",
+      "mechanics_pl": [
+        "Zacznij mówić samogłoskę normalnie, pełnym głosem.",
+        "W połowie jej trwania delikatnie napnij fałdy głosowe w krtani — jakbyś miał/a zacząć chrząkać, ale zatrzymaj się na samym początku tego ruchu.",
+        "Głos powinien na moment lekko „zaskrzypieć”, a nie się urwać — to jak środek angielskiego „uh-oh”, tylko dużo delikatniej.",
+        "Dokończ samogłoskę tym samym oddechem, bez nabierania nowego powietrza."
+      ],
+      "polishTrap_pl": "Polski nie ma takiego dźwięku, więc usta i krtań robią jedną z dwóch rzeczy: albo całkiem pomijają zwarcie (przez co para słów typu hun/hund brzmi tak samo), albo — gdy ktoś już wie, że coś tam „powinno być” — robi z tego twarde, pełne zatrzymanie głosu. Obie skrajności są błędne: zwarcie ma być lekkie, a głos ma płynąć dalej.",
+      "anchor_pl": "Powiedz polskie „ale nie!” z nutą oburzenia — usłyszysz małe zacięcie głosu w środku „nie”. To jest ten ruch krtani, tylko dużo subtelniejszy.",
+      "practiceWords": [
+        { "word": "hund", "gloss_pl": "pies" },
+        { "word": "mand", "gloss_pl": "mężczyzna" },
+        { "word": "ven", "gloss_pl": "przyjaciel" },
+        { "word": "bønder", "gloss_pl": "rolnicy" },
+        { "word": "mord", "gloss_pl": "morderstwo" }
+      ],
+      "minimalPairs": [
+        { "a": "hun", "b": "hund", "gloss_a_pl": "ona", "gloss_b_pl": "pies" },
+        { "a": "man", "b": "mand", "gloss_a_pl": "się (bezosobowo)", "gloss_b_pl": "mężczyzna" },
+        { "a": "bønner", "b": "bønder", "gloss_a_pl": "fasolki", "gloss_b_pl": "rolnicy" },
+        { "a": "mor", "b": "mord", "gloss_a_pl": "matka", "gloss_b_pl": "morderstwo" }
+      ],
+      "exampleSentence": { "danish": "Min ven har en hund.", "gloss_pl": "Mój przyjaciel ma psa." }
+    },
+    {
+      "id": "soft-d",
+      "status": "draft",
+      "title_da": "Blødt d",
+      "title_pl": "Miękkie d (blødt d)",
+      "whatItIs_pl": "Miękkie d to nie jest polskie d ani angielskie „th”. To dźwięk, w którym czubek języka w ogóle nie dotyka podniebienia — powietrze płynie swobodnie nad grzbietem języka. Słychać go w bardzo wielu codziennych słowach, m.in. w końcówce „-et/-ede”.",
+      "mechanics_pl": [
+        "Opuść czubek języka i oprzyj go z tyłu o dolne zęby — ma tam zostać przez cały czas trwania dźwięku.",
+        "Unieś lekko środkową część grzbietu języka w stronę podniebienia, ale go nie dotykaj.",
+        "Puść powietrze swobodnie nad językiem, bez tarcia i bez zwarcia.",
+        "Dźwięk powinien brzmieć miękko i „rozlewać się”, nie jak wyraźne d ani jak angielskie th."
+      ],
+      "polishTrap_pl": "Polskie ucho chce tu usłyszeć albo twarde d, albo coś jak ciemne „ł”. Największym błędem jest dotknięcie czubkiem języka zębów lub dziąseł (to daje polskie d) albo wsunięcie języka między zęby jak w angielskim „th” (to daje tarcie, którego w duńskim nie ma). Czubek języka ma zostać bezczynny na dole przez cały czas.",
+      "anchor_pl": "Powiedz polskie „ł” jak w „łąka”, ale zamiast dotykać czymkolwiek, zostaw czubek języka całkiem na dole i rozluźnij usta — to najbliższy punkt startowy.",
+      "practiceWords": [
+        { "word": "mad", "gloss_pl": "jedzenie" },
+        { "word": "gade", "gloss_pl": "ulica" },
+        { "word": "hvad", "gloss_pl": "co" },
+        { "word": "hedder", "gloss_pl": "nazywa się" },
+        { "word": "glad", "gloss_pl": "szczęśliwy" }
+      ],
+      "exampleSentence": { "danish": "Jeg er glad for maden.", "gloss_pl": "Cieszę się z jedzenia." }
+    },
+    {
+      "id": "r-initial",
+      "status": "draft",
+      "title_da": "R i begyndelsen af en stavelse",
+      "title_pl": "R na początku sylaby",
+      "whatItIs_pl": "To r wcale nie przypomina polskiego przedniego, wibrującego r. Powstaje głęboko w gardle, bliżej miejsca, gdzie robi się chrapanie, i nie ma w nim żadnej wibracji języka.",
+      "mechanics_pl": [
+        "Zostaw czubek języka luźno za dolnymi zębami — nie bierze on udziału w tym dźwięku.",
+        "Cofnij tylną część języka w stronę języczka (uvuli), jakbyś delikatnie chrapał/a albo zaczynał/a płukać gardło.",
+        "Zwężaj przepływ powietrza w tym miejscu tak słabo, żeby nie powstała żadna wibracja ani chrapliwy szum — ma być tylko lekkie tarcie.",
+        "Przejdź od razu do kolejnej samogłoski, bez zatrzymywania się na tym dźwięku."
+      ],
+      "polishTrap_pl": "Naturalny odruch to polskie, przednie, wibrujące r robione czubkiem języka — to najsilniejszy „polski akcent” w duńskim. Duńskie r nie wibruje w ogóle i przedni język jest przy nim całkiem bierny.",
+      "anchor_pl": "Spróbuj delikatnie zachrapać albo powiedz francuskie „r” z „merci” bardzo cicho — to ruch w tamtej okolicy gardła, tylko lżejszy.",
+      "practiceWords": [
+        { "word": "rød", "gloss_pl": "czerwony" },
+        { "word": "rigtig", "gloss_pl": "właściwy" },
+        { "word": "rejse", "gloss_pl": "podróż" },
+        { "word": "ryge", "gloss_pl": "palić" }
+      ],
+      "exampleSentence": { "danish": "Det røde hus er rigtig flot.", "gloss_pl": "Ten czerwony dom jest naprawdę ładny." }
+    },
+    {
+      "id": "r-vocalised",
+      "status": "draft",
+      "title_da": "Vokaliseret r (efter en vokal)",
+      "title_pl": "R po samogłosce (r jako „a”)",
+      "whatItIs_pl": "Po samogłosce duńskie r w ogóle nie jest spółgłoską — zamienia się w luźny, niski dźwięk podobny do „a”. Dlatego „mor” brzmi mniej więcej jak „moa”, a nie jak „mor”.",
+      "mechanics_pl": [
+        "Wymów samogłoskę przed r normalnie.",
+        "Zamiast dotykać czymkolwiek gardła czy podniebienia, po prostu opuść szczękę jeszcze niżej i rozluźnij język.",
+        "Skończ na cichym, niskim dźwięku „a” — to jest cały ten „r”.",
+        "Nie dodawaj żadnej spółgłoski na końcu — usta mają się po prostu otworzyć i zamknąć."
+      ],
+      "polishTrap_pl": "Polski odruch to wymówienie tam jakiejkolwiek spółgłoski r — nawet bardzo słabej. W duńskim nie ma tam żadnego kontaktu językiem ani zwężenia — to czysta, luźna samogłoska.",
+      "anchor_pl": "Powiedz polskie „a” i po prostu przeciągnij je, opadając głosem, zamiast próbować wymówić r.",
+      "practiceWords": [
+        { "word": "mor", "gloss_pl": "matka" },
+        { "word": "her", "gloss_pl": "tutaj" },
+        { "word": "over", "gloss_pl": "nad" },
+        { "word": "er", "gloss_pl": "jest" }
+      ],
+      "exampleSentence": { "danish": "Min mor er her.", "gloss_pl": "Moja mama jest tutaj." }
+    },
+    {
+      "id": "y",
+      "status": "draft",
+      "title_da": "Y",
+      "title_pl": "Głoska y",
+      "whatItIs_pl": "Duńskie y to samogłoska, której w polskim nie ma osobno — to połączenie wysokiego, przedniego „i” z mocno zaokrąglonymi ustami, jak przy „u”.",
+      "mechanics_pl": [
+        "Powiedz polskie „i” i zamroź ustawienie języka dokładnie w tym miejscu.",
+        "Nie ruszając językiem, mocno zaokrąglij i wysuń usta do przodu, jakbyś miał/a gwizdać albo mówić „u”.",
+        "Dźwięk, który usłyszysz, to y — wysoki jak „i”, ale „zaokrąglony” w ustach jak „u”."
+      ],
+      "polishTrap_pl": "Najczęstszy błąd to rozluźnienie ust z powrotem do zwykłego „i” (zbyt płasko) albo, odwrotnie, cofnięcie języka w stronę „u” (zbyt nisko/tylnie). Y ma zostać dokładnie pomiędzy: język jak przy i, usta jak przy u.",
+      "anchor_pl": "Powiedz „i”, a potem, nie ruszając językiem, tylko zaokrąglij wargi.",
+      "practiceWords": [
+        { "word": "ny", "gloss_pl": "nowy" },
+        { "word": "lys", "gloss_pl": "światło / jasny" },
+        { "word": "syv", "gloss_pl": "siedem" },
+        { "word": "nyt", "gloss_pl": "nowe" }
+      ],
+      "minimalPairs": [
+        { "a": "ny", "b": "ni", "gloss_a_pl": "nowy", "gloss_b_pl": "dziewięć" }
+      ],
+      "exampleSentence": { "danish": "Jeg har syv nye bøger.", "gloss_pl": "Mam siedem nowych książek." }
+    },
+    {
+      "id": "oe",
+      "status": "draft",
+      "title_da": "Ø",
+      "title_pl": "Głoska ø",
+      "whatItIs_pl": "Ø to samogłoska środkowa, zaokrąglona — coś jak polskie „e”, ale wymówione z mocno zaokrąglonymi ustami, jak przy „o”.",
+      "mechanics_pl": [
+        "Powiedz polskie „e” jak w „ser” i zamroź ustawienie języka.",
+        "Zaokrąglij usta tak, jakbyś mówił/a „o”, nie ruszając przy tym językiem.",
+        "Wynikowy dźwięk to ø — brzmi trochę jak połączenie „e” i „o”, ale to jedna, stała samogłoska, nie dyftong."
+      ],
+      "polishTrap_pl": "Bez zaokrąglenia ust wychodzi zwykłe polskie „e”. Z za mocno cofniętym językiem wychodzi „o”. Ø ma zostać dokładnie pomiędzy — język przy e, usta przy o.",
+      "anchor_pl": "Powiedz „e”, a potem, nie ruszając językiem, zaokrąglij wargi jak do „o”.",
+      "practiceWords": [
+        { "word": "øl", "gloss_pl": "piwo" },
+        { "word": "købe", "gloss_pl": "kupować" },
+        { "word": "sød", "gloss_pl": "słodki" },
+        { "word": "høre", "gloss_pl": "słyszeć" }
+      ],
+      "exampleSentence": { "danish": "Vil du købe en øl?", "gloss_pl": "Chcesz kupić piwo?" }
+    },
+    {
+      "id": "o-aa-u-ladder",
+      "status": "draft",
+      "title_da": "Å/o/u-stigen",
+      "title_pl": "Drabinka å–o–u",
+      "whatItIs_pl": "Duńskie å, o i u to trzy blisko siebie leżące, ciasne samogłoski tylne — łatwiej nauczyć się ich razem, jako trzy stopnie jednej „drabinki” szczęki, niż jako trzy osobne, niepowiązane dźwięki.",
+      "mechanics_pl": [
+        "Zacznij od å: szczęka średnio otwarta, usta zaokrąglone — to mniej więcej tam, gdzie leży polskie „o”.",
+        "Przejdź do duńskiego o: domknij szczękę odrobinę bardziej i ściśnij usta ciaśniej niż przy polskim „o” — duńskie o jest wyraźnie węższe.",
+        "Przejdź do u: domknij szczękę jeszcze bardziej i zaokrąglij usta maksymalnie ciasno, prawie w dziurkę.",
+        "Powtórz całą drabinkę å → o → u kilka razy jako jeden płynny ruch szczęki, nie jako trzy osobne próby."
+      ],
+      "polishTrap_pl": "Polskie „o” i „u” są szersze i luźniejsze niż ich duńskie odpowiedniki, więc duńskie o i u wychodzą za nisko i za szeroko, a å zlewa się z polskim „o” i traci swoje miejsce na drabince.",
+      "anchor_pl": "Powiedz polskie „o”, „u” po kolei i zwróć uwagę, jak szczęka się domyka — potem powtórz to samo, ale trochę ciaśniej i węziej niż zwykle.",
+      "practiceWords": [
+        { "word": "år", "gloss_pl": "rok" },
+        { "word": "sol", "gloss_pl": "słońce" },
+        { "word": "hus", "gloss_pl": "dom" },
+        { "word": "nu", "gloss_pl": "teraz" }
+      ],
+      "exampleSentence": { "danish": "Solen skinner hele året.", "gloss_pl": "Słońce świeci przez cały rok." }
+    },
+    {
+      "id": "i-e-ae-a-ladder",
+      "status": "draft",
+      "title_da": "I/e/æ/a-stigen",
+      "title_pl": "Drabinka i–e–æ–a",
+      "whatItIs_pl": "To cztery przednie samogłoski duńskiego ułożone od najwyższej do najniższej pozycji języka. Tam, gdzie polski ma w zasadzie jedno „e”, duński ma dwa osobne stopnie — e i æ — więc warto ćwiczyć całą czwórkę jako jeden, płynny ruch szczęki.",
+      "mechanics_pl": [
+        "Zacznij od i: język wysoko, blisko podniebienia, usta rozciągnięte, szczęka prawie zamknięta.",
+        "Przejdź do e: opuść język i szczękę odrobinę niżej niż przy i.",
+        "Przejdź do æ: opuść język i szczękę jeszcze niżej — to osobny stopień, wyraźnie niższy niż e, mimo że po polsku obydwa „brzmią jak e”.",
+        "Zakończ na a: szczęka najniżej, język najniżej i najbardziej z przodu.",
+        "Powtórz i → e → æ → a jako jeden ciągły ruch opadającej szczęki."
+      ],
+      "polishTrap_pl": "Polski ma tylko jedno „e”, więc e i æ zlewają się w jeden dźwięk — a to w duńskim rozróżnia słowa. Trzeba świadomie zrobić dwa różne stopnie tam, gdzie polskie ucho słyszy jeden.",
+      "anchor_pl": "Powiedz powoli polskie „i”, „e”, „a” i posłuchaj, jak szczęka się otwiera — potem wstaw między e i a dodatkowy, pośredni stopień: to jest æ.",
+      "practiceWords": [
+        { "word": "mile", "gloss_pl": "mila" },
+        { "word": "mele", "gloss_pl": "miele" },
+        { "word": "mæle", "gloss_pl": "głos, mowa" },
+        { "word": "male", "gloss_pl": "malować" }
+      ],
+      "minimalPairs": [
+        { "a": "mele", "b": "mæle", "gloss_a_pl": "miele", "gloss_b_pl": "głos / mowa" }
+      ],
+      "exampleSentence": { "danish": "Han har mistet mælet.", "gloss_pl": "Odjęło mu mowę." }
+    },
+    {
+      "id": "soft-g",
+      "status": "draft",
+      "title_da": "Blødt/stumt g",
+      "title_pl": "Miękkie i nieme g",
+      "whatItIs_pl": "Po samogłosce duńskie g prawie nigdy nie brzmi jak twarde polskie g. Zamienia się w luźny, cichy poślizg albo znika całkowicie.",
+      "mechanics_pl": [
+        "Nie domykaj tyłu języka do podniebienia miękkiego tak, jak przy zwykłym g.",
+        "Zostaw tam tylko lekkie zbliżenie, bez pełnego zwarcia — powietrze ma dalej lecieć.",
+        "W wielu słowach pomiń ten ruch całkowicie i przejdź prosto do kolejnej głoski.",
+        "Zapamiętaj to jako regułę: po samogłosce g nigdy nie jest twarde."
+      ],
+      "polishTrap_pl": "Polski odruch to zawsze pełne, twarde g. W duńskim po samogłosce to niemal zawsze błąd — trzeba świadomie „rozluźnić” albo pominąć ten dźwięk.",
+      "anchor_pl": "Powiedz polskie g, a potem spróbuj powiedzieć je tak leniwie, żeby język ledwo dotknął podniebienia — albo wcale.",
+      "practiceWords": [
+        { "word": "dag", "gloss_pl": "dzień" },
+        { "word": "meget", "gloss_pl": "bardzo" },
+        { "word": "bage", "gloss_pl": "piec (ciasto)" },
+        { "word": "sige", "gloss_pl": "mówić" }
+      ],
+      "exampleSentence": { "danish": "Jeg vil gerne bage i dag.", "gloss_pl": "Chętnie dziś upiekę coś." }
+    },
+    {
+      "id": "silent-letters",
+      "status": "draft",
+      "title_da": "Stumme bogstaver",
+      "title_pl": "Nieme litery",
+      "whatItIs_pl": "Duński pisany i mówiony różnią się bardzo mocno. Kilka liter jest niemych w konkretnych, regularnych pozycjach — warto znać te reguły jako reguły czytania, nie zapamiętywać słowo po słowie.",
+      "mechanics_pl": [
+        "H przed v na początku słowa jest nieme — czytaj od razu v (hvad, hvem).",
+        "D po l, n lub r na końcu sylaby jest nieme — czytaj tylko l/n/r (guld, mand, bord).",
+        "Końcówki pisane -et i -ede w mowie potocznej się redukują — nie wymawiaj ich tak wyraźnie, jak są napisane.",
+        "Ćwicz te reguły na głos na przykładach, aż staną się odruchem czytania, a nie doraźną decyzją."
+      ],
+      "polishTrap_pl": "Polska pisownia jest niemal w 100% fonetyczna, więc odruch to wymawiać każdą literę. W duńskim to prowadzi do wymawiania liter, których rodzimy użytkownik nigdy nie wypowie.",
+      "anchor_pl": "Przy nowym słowie pytaj najpierw: „czy to h+v, czy to d po l/n/r, czy to końcówka -et/-ede?” — zanim spróbujesz je przeczytać na głos.",
+      "practiceWords": [
+        { "word": "hvad", "gloss_pl": "co" },
+        { "word": "hvem", "gloss_pl": "kto" },
+        { "word": "guld", "gloss_pl": "złoto" },
+        { "word": "mand", "gloss_pl": "mężczyzna" },
+        { "word": "bord", "gloss_pl": "stół" }
+      ],
+      "exampleSentence": { "danish": "Hvad hedder bordet af guld?", "gloss_pl": "Jak nazywa się ten złoty stół? (przykład czytania)" }
+    },
+    {
+      "id": "lenis-fortis",
+      "status": "draft",
+      "title_da": "B/d/g mod p/t/k",
+      "title_pl": "B/d/g kontra p/t/k",
+      "whatItIs_pl": "W duńskim to, co jest pisane jako b, d, g, właściwie brzmi jak niedźwięczne, „leniwe” p, t, k — a to, co jest pisane jako p, t, k, jest mocno przydechowe. Różnica między tymi parami to głównie siła oddechu, nie dźwięczność, jak w polskim.",
+      "mechanics_pl": [
+        "Wymawiając b, d, g, nie wprawiaj strun głosowych w drganie tak, jak robisz to w polskim — zrób je „leniwie”, prawie jak p, t, k, ale bez przydechu.",
+        "Wymawiając p, t, k, dodaj wyraźny wybuch powietrza zaraz po spółgłosce — poczujesz strumień powietrza na dłoni przy ustach.",
+        "Przy t na początku słowa dodaj lekki syk zaraz po wybuchu, tak że „tid” brzmi niemal jak „tsid”.",
+        "Skup się na sile oddechu jako sygnale różnicy, nie na tym, czy struny głosowe drgają."
+      ],
+      "polishTrap_pl": "Polski rozróżnia te pary przez dźwięczność (b vs p to głos vs brak głosu), więc Polacy w pełni udźwięczniają duńskie b, d, g — a wtedy pary typu bage/bakke brzmią tak samo, choć w duńskim nie powinny.",
+      "anchor_pl": "Przyłóż dłoń tuż przed ustami i powiedz polskie p — poczujesz wyraźny podmuch. Duńskie p/t/k mają mieć taki sam, mocny podmuch; duńskie b/d/g — żadnego.",
+      "practiceWords": [
+        { "word": "bage", "gloss_pl": "piec (ciasto)" },
+        { "word": "bakke", "gloss_pl": "taca / wzgórze" },
+        { "word": "tid", "gloss_pl": "czas" },
+        { "word": "dag", "gloss_pl": "dzień" }
+      ],
+      "minimalPairs": [
+        { "a": "bage", "b": "bakke", "gloss_a_pl": "piec", "gloss_b_pl": "taca / wzgórze" }
+      ],
+      "exampleSentence": { "danish": "Det tager tid at bage kagen.", "gloss_pl": "Upieczenie ciasta zajmuje czas." }
+    },
+    {
+      "id": "schwa-rhythm",
+      "status": "draft",
+      "title_da": "Stumt e og rytme",
+      "title_pl": "Zanikające e i rytm mowy",
+      "whatItIs_pl": "Nieakcentowane „e” na końcu wielu duńskich słów w mowie potocznej właściwie znika — zlewa się z poprzednią spółgłoską. Mówiony duński „zjada” dużo więcej, niż pokazuje pisownia.",
+      "mechanics_pl": [
+        "Znajdź nieakcentowaną końcówkę -e na końcu słowa (np. w gade).",
+        "Zamiast wyraźnie ją domawiać, po prostu zakończ na spółgłosce przed nią i pozwól głosowi wygasnąć.",
+        "Utrzymaj naturalny rytm zdania — nieakcentowane sylaby mają być krótkie i lekkie, akcentowane wyraźnie dłuższe i mocniejsze.",
+        "Ćwicz najpierw wolne, „słownikowe” tempo, a potem to samo zdanie w naturalnym, szybkim tempie, żeby usłyszeć różnicę."
+      ],
+      "polishTrap_pl": "Polska wymowa jest blisko pisowni, więc odruch to wymówić każdą samogłoskę wyraźnie, łącznie z końcowym e. W naturalnym duńskim to brzmi sztucznie i zbyt wolno.",
+      "anchor_pl": "Powiedz polskie słowo kończące się spółgłoską (np. „gad”), a potem to samo z ledwo słyszalnym „e” na końcu — tyle, ile go zwykle zostaje w szybkiej duńskiej mowie.",
+      "practiceWords": [
+        { "word": "gade", "gloss_pl": "ulica" },
+        { "word": "taske", "gloss_pl": "torba" },
+        { "word": "cykle", "gloss_pl": "rowery / jeździć na rowerze" },
+        { "word": "øje", "gloss_pl": "oko" }
+      ],
+      "exampleSentence": { "danish": "Jeg cykler ned ad gaden.", "gloss_pl": "Jadę rowerem w dół ulicy." }
+    }
+  ]
+}

@@ -277,6 +277,7 @@
       "polish": "pies",
       "phoneticPl": "hun’",
       "emojiAnchor": "🐶",
+      "soundTags": ["stoed"],
       "contentHash": "98d43566b01d1f674e17cf5a2f92585f458ebf82f820746ec5c0fca2c118829c"
     },
     {
@@ -288,6 +289,7 @@
       "polish": "mężczyzna / mąż",
       "phoneticPl": "man’",
       "emojiAnchor": "🧑",
+      "soundTags": ["stoed"],
       "contentHash": "2c9c52364b4a8e4e0f38e5e8c6c3efd31c5547bedfd9687da178c0cfcb4d4a63"
     },
     {
@@ -299,6 +301,7 @@
       "polish": "przyjaciel",
       "phoneticPl": "ven’",
       "emojiAnchor": "🤝",
+      "soundTags": ["stoed"],
       "contentHash": "e74018d1dd2a9d5f88e2c1ea4c01fe125fa33de27281b029cdab789fdcdec1dd"
     },
     {
@@ -310,6 +313,7 @@
       "polish": "jedzenie",
       "phoneticPl": "mał",
       "emojiAnchor": "🍽️",
+      "soundTags": ["soft-d"],
       "contentHash": "8bd54373d6fa39ba311d06d1e95d813e9f00aab9912a6ec06c2461d63c7a2c13"
     },
     {
@@ -321,6 +325,7 @@
       "polish": "ulica",
       "phoneticPl": "gałe",
       "emojiAnchor": "🛣️",
+      "soundTags": ["soft-d"],
       "contentHash": "f4d0397dfc7501442c2fed067c12bdb8e6b65f183312f5a21a0e68a43ee15548"
     },
     {
@@ -332,6 +337,7 @@
       "polish": "szczęśliwy",
       "phoneticPl": "glał",
       "emojiAnchor": "😄",
+      "soundTags": ["soft-d"],
       "contentHash": "5a3ce39b4073877ebdc10c734529705c5e752e679bba862c4f810010d21cf273"
     },
     {
@@ -343,6 +349,7 @@
       "polish": "nowy",
       "phoneticPl": "nü",
       "emojiAnchor": "✨",
+      "soundTags": ["y"],
       "contentHash": "24fa541fb69d129043c2e83c820cae8c539bb63a7ca8509d5ee1896240ea9d7d"
     },
     {
@@ -354,6 +361,7 @@
       "polish": "piwo",
       "phoneticPl": "øl",
       "emojiAnchor": "🍺",
+      "soundTags": ["oe"],
       "contentHash": "bdca54b4223cb576fe25fb74af7b1199c783cc33f60a7fc69687bc99a68259c4"
     },
     {
@@ -365,6 +373,7 @@
       "polish": "mama",
       "phoneticPl": "moa",
       "emojiAnchor": "👩",
+      "soundTags": ["r-vocalised"],
       "contentHash": "cc801f0d8e2437e52f3cebdf068c0e0fa1c9f96d02201bc6d4910e7f646a86e6"
     },
     {
@@ -376,6 +385,7 @@
       "polish": "tutaj",
       "phoneticPl": "hea",
       "emojiAnchor": "📍",
+      "soundTags": ["r-vocalised"],
       "contentHash": "d7295902a4e44b311b01cefe4632c05c6ffe9caca1d959c5264eb66015a95bf0"
     }
   ]
