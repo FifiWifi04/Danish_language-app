@@ -1,0 +1,39 @@
+{
+  "v": 1,
+  "type": "vocab",
+  "items": [
+    {
+      "id": "fixture.one",
+      "status": "draft",
+      "priority": 1,
+      "danish": "et",
+      "english": "one",
+      "polish": "jeden",
+      "phoneticPl": "et",
+      "emojiAnchor": "1️⃣",
+      "contentHash": "fixture-one"
+    },
+    {
+      "id": "fixture.two",
+      "status": "draft",
+      "priority": 2,
+      "danish": "to",
+      "english": "two",
+      "polish": "dwa",
+      "phoneticPl": "to",
+      "emojiAnchor": "2️⃣",
+      "contentHash": "fixture-two"
+    },
+    {
+      "id": "fixture.three",
+      "status": "draft",
+      "priority": 3,
+      "danish": "tre",
+      "english": "three",
+      "polish": "trzy",
+      "phoneticPl": "tre",
+      "emojiAnchor": "3️⃣",
+      "contentHash": "fixture-three"
+    }
+  ]
+}

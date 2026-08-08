@@ -1,4 +1,13 @@
+import type { ProgressStore } from '../core/store';
+import type { VocabItem } from '../data/content';
+import { renderReview } from './review';
+
 export type TabId = 'review' | 'udtale' | 'stats';
+
+export interface ShellDeps {
+  store: ProgressStore;
+  deck: VocabItem[];
+}
 
 interface TabDef {
   id: TabId;
@@ -22,14 +31,18 @@ function tabFromHash(hash: string): TabId {
   return isTabId(id) ? id : DEFAULT_TAB;
 }
 
-function renderMain(main: HTMLElement, tab: TabId): void {
+function renderMain(main: HTMLElement, tab: TabId, deps: ShellDeps): void {
   main.textContent = '';
   const heading = document.createElement('h2');
   heading.textContent = TABS.find((t) => t.id === tab)?.label ?? '';
   main.appendChild(heading);
+
+  if (tab === 'review') {
+    renderReview(main, deps.store, deps.deck);
+  }
 }
 
-export function renderShell(root: HTMLElement): void {
+export function renderShell(root: HTMLElement, deps: ShellDeps): void {
   root.textContent = '';
 
   const header = document.createElement('header');
@@ -51,10 +64,10 @@ export function renderShell(root: HTMLElement): void {
   }
 
   window.addEventListener('hashchange', () => {
-    renderMain(main, tabFromHash(window.location.hash));
+    renderMain(main, tabFromHash(window.location.hash), deps);
   });
 
-  renderMain(main, tabFromHash(window.location.hash));
+  renderMain(main, tabFromHash(window.location.hash), deps);
 
   const footer = document.createElement('footer');
   footer.textContent = `v${import.meta.env.PACKAGE_VERSION}`;
