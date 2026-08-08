@@ -25,7 +25,7 @@ file from anywhere — iterations re-read it on every firing.
 | 4 | Session queue builder (caps, ordering, no-repeat, relearning re-entry) | PHASE1 WS-C | done@8cdfd8f | — |
 | 5 | Progress store: interface + memory adapter + IndexedDB adapter | PHASE1 WS-D | done@889545b | D-DEP1 answered (either answer unblocks) |
 | 6 | Simulation soak harness (2 y × 500 cards) wired into `npm test` | PHASE1 WS-E | done@63a0b34 | — |
-| 7 | Content schema + validator (`vocab`, `particle`, `pronunciation` types) + `npm run validate` in CI | PHASE2 WS-A | todo | — |
+| 7 | Content schema + validator (`vocab`, `particle`, `pronunciation` types) + `npm run validate` in CI | PHASE2 WS-A | done@64395f2 | — |
 | 8 | 30-card pilot deck, generated per the template, `"status":"draft"` | PHASE2 WS-B | todo | — |
 | 9 | Mode A review UI (reveal + Again/Hard/Good), draft badge on draft cards | PHASE3 WS-A | todo | — |
 | 10 | PWA: manifest, precache, offline, update-available toast | PHASE3 WS-B | todo | — |
@@ -163,6 +163,42 @@ file from anywhere — iterations re-read it on every firing.
   not `src/core` — core stays pure, no `Date.now()`/`Math.random()` was
   added there). No UI/PWA/content/scheduler-behaviour/dependency touched,
   so tier 2/3 don't apply.
+- 2026-08-08 — item 7 (PHASE2 WS-A content schema + validator) done@64395f2,
+  tier-1 verified (npm test: 48/48 across 9 files incl. the 7 named
+  `validate:` tests — accepts the fixture deck, rejects duplicate id,
+  rejects bad contentHash, rejects cloze without target, rejects unknown
+  soundTag, accepts a cross-file soundTag resolution, and the whole-repo
+  `every content file is clean` assertion (0 files today — `content/`
+  doesn't exist until item 8); tsc --noEmit; vite build; `npm run
+  validate` all green), pushed. Implemented per `CLAUDE.md` rule 4b's
+  resolved decision: `scripts/validate-content.mjs` (thin orchestrator,
+  96 lines) + `scripts/content-item-schemas.mjs` (per-type field
+  validators + shared helpers, 152 lines) are plain ESM JS, pure
+  functions over parsed JSON, no fs/TS/new dependency; split into two
+  files to stay under CLAUDE.md's ~200-line guideline (a single-file
+  draft hit 234 lines). Validates: top-level `{v:1, type, items}` shape;
+  vocab fields incl. `theme.word`-shaped id, emoji-ness of `emojiAnchor`
+  (via `Intl.Segmenter` grapheme count, 1-2 clusters all
+  Extended_Pictographic), `contentHash` recomputed via
+  `sha256(danish + "|" + (clozeTarget ?? ""))` and compared,
+  clozeSentence/clozeTarget co-requirement (contains `"___"`, target
+  required iff sentence present — the "must equal danish or an inflected
+  form" clause in the plan is left unchecked as unenforceable without a
+  Danish morphology dictionary, which is out of scope); particle fields
+  incl. `pairs` ≥2; pronunciation fields per `PLAN_PRONUNCIATION.md`
+  WS-A's schema (`practiceWords` 4-8, `minimalPairs` 0-4, optional
+  `exampleSentence`); id uniqueness across ALL passed-in files; soundTags
+  referential integrity against pronunciation ids collected across files.
+  `tests/validate-content.test.ts` reads `content/*.json` from disk via
+  `process.cwd()` (an `import.meta.url`-based path threw `TypeError: The
+  URL must be of scheme file` under vitest's happy-dom test environment —
+  switched to `process.cwd()`, which is stable since vitest always runs
+  from the repo root) and is exactly what `npm run validate` runs
+  (already wired in `package.json` from item 0's scaffold — no CI change
+  needed, matching the plan's "wire nothing extra into CI"). No
+  UI/PWA/scheduler-behaviour/dependency touched. `content/` itself is
+  still absent — that's item 8 (PHASE2 WS-B, the 30-card pilot deck),
+  correctly left for the next firing per the one-workstream bound.
 
 ## Solutions & fixes log
 
