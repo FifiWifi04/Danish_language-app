@@ -1,6 +1,7 @@
 import { renderShell } from './ui/shell';
 import { IdbStore } from './data/idb';
 import { loadVocabDeck } from './data/content';
+import { initPwa } from './pwa';
 import type { ProgressStore } from './core/store';
 
 declare global {
@@ -21,6 +22,8 @@ async function bootstrap(): Promise<void> {
   if (new URLSearchParams(search).get('e2eDeck') === '1') {
     window.__e2eStore = store;
   }
+
+  initPwa();
 }
 
 void bootstrap();
