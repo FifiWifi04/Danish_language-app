@@ -1,6 +1,7 @@
 import type { ProgressStore } from '../core/store';
 import type { VocabItem } from '../data/content';
 import { renderReview } from './review';
+import { renderStats } from './stats';
 
 export type TabId = 'review' | 'udtale' | 'stats';
 
@@ -39,6 +40,8 @@ function renderMain(main: HTMLElement, tab: TabId, deps: ShellDeps): void {
 
   if (tab === 'review') {
     renderReview(main, deps.store, deps.deck);
+  } else if (tab === 'stats') {
+    renderStats(main, deps.store, deps.deck);
   }
 }
 

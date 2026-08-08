@@ -8,9 +8,8 @@ import { computeStreak } from '../core/stats';
 import { dayNumber, minuteNumber } from '../core/time';
 import { mulberry32 } from '../core/rng';
 import { renderCard } from './review-card';
+import { backupAgeDays, BACKUP_NUDGE_DAYS } from './backup-status';
 
-const LAST_EXPORT_KEY = 'danmarksliv:lastExportAt';
-const BACKUP_NUDGE_DAYS = 7;
 const DEFAULT_CAPS = { newPerDay: 20, reviewsPerDay: 200 };
 
 function currentTime(): { today: number; nowMinute: number } {
@@ -98,14 +97,11 @@ function renderSessionEnd(wrapper: HTMLElement, done: number, streak: number): v
   wrapper.appendChild(summary);
 
   const nudge = document.createElement('p');
-  const lastExportAt = localStorage.getItem(LAST_EXPORT_KEY);
-  if (lastExportAt === null) {
+  const ageDays = backupAgeDays(Date.now());
+  if (ageDays === null) {
     nudge.textContent = "You haven't backed up your progress yet — export it from Stats soon.";
-  } else {
-    const ageDays = Math.floor((Date.now() - Number(lastExportAt)) / 86_400_000);
-    if (ageDays > BACKUP_NUDGE_DAYS) {
-      nudge.textContent = `Backup is ${String(ageDays)} days old — export your progress soon.`;
-    }
+  } else if (ageDays > BACKUP_NUDGE_DAYS) {
+    nudge.textContent = `Backup is ${String(ageDays)} days old — export your progress soon.`;
   }
   if (nudge.textContent) wrapper.appendChild(nudge);
 }
