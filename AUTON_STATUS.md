@@ -31,7 +31,7 @@ file from anywhere — iterations re-read it on every firing.
 | 10 | PWA: manifest, precache, offline, update-available toast | PHASE3 WS-B | done@35b0a16 | — |
 | 11 | Stats view + append-only session log + streak/due counts | PHASE3 WS-C | done@f11292c | — |
 | 12 | Progress export/import (JSON file) + stale-backup nudge | PHASE3 WS-D | done@00548ed | — |
-| 13 | Pronunciation guide content file (~12 phenomena, mechanics, DRAFT) + add `soundTags` to the 10 sound-coverage pilot cards (deferred from item 8 — see its log entry) | PRON WS-A | todo | — |
+| 13 | Pronunciation guide content file (~12 phenomena, mechanics, DRAFT) + add `soundTags` to the 10 sound-coverage pilot cards (deferred from item 8 — see its log entry) | PRON WS-A | done@e0d2987 | — |
 | 14 | Udtale tab UI (guide browser) + `soundTags` links from cards | PRON WS-B | todo | — |
 | 15 | Audio build script + manifest + fake-provider tests (no real key use) | PHASE4 WS-A | todo | — |
 | 16 | Audio playback wiring in Mode A (manifest-driven, silent degrade) | PHASE4 WS-B | todo | — |
@@ -407,6 +407,34 @@ file from anywhere — iterations re-read it on every firing.
   the version before writing anything, so a bad file never partially
   imports. No core/scheduler/content/dependency touched; the content
   firewall wasn't in play.
+- 2026-08-08 — item 13 (PRON WS-A pronunciation guide content) done@e0d2987,
+  tier-1 verified (npm test: 59/59 across 11 files, incl. the existing
+  `validate: accepts a soundTag that resolves to a pronunciation item in
+  another file` and `validate: every content file is clean` tests now
+  exercising the real cross-file reference; tsc --noEmit; vite build;
+  `npm run validate` 7/7 all green). Content-only workstream (no UI/PWA
+  touched), so tier 2/3 don't apply. `content/pronunciation.v1.json` seeds
+  all 12 phenomena from `PLAN_PRONUNCIATION.md` WS-A verbatim in scope —
+  stoed, soft-d, r-initial, r-vocalised, y, oe, o-aa-u-ladder,
+  i-e-ae-a-ladder, soft-g, silent-letters, lenis-fortis, schwa-rhythm —
+  every item `"status":"draft"`, each with `mechanics_pl` as ordered
+  imperative tongue/lips/jaw/throat steps, `polishTrap_pl` naming the
+  specific L1-transfer error, `anchor_pl` giving a Polish-sound starting
+  point, 4-5 `practiceWords` (within the schema's 4-8 range), and
+  `minimalPairs`/`exampleSentence` where a natural pair existed (not
+  forced onto every item — both optional per schema). Also closed out
+  item 8's deferred TODO: added `soundTags` to the 10 sound-coverage
+  pilot cards in `content/deck.v1.json` using exactly the slugs that log
+  entry named — `sound.hund`/`sound.mand`/`sound.ven` → `["stoed"]`,
+  `sound.mad`/`sound.gade`/`sound.glad` → `["soft-d"]`, `sound.ny` →
+  `["y"]`, `sound.oel` → `["oe"]`, `sound.mor`/`sound.her` →
+  `["r-vocalised"]` (the last pair matches phenomenon 4, "vocalised r
+  after a vowel", not r-initial). No new dependency, no scheduler change,
+  no `"status":"reviewed"` content touched (deck.v1.json's edited rows
+  are all still draft) — content firewall respected. Validator support
+  (`scripts/content-item-schemas.mjs`'s `validatePronunciationItem`) was
+  already built ahead of time in item 7, so no validator change was
+  needed here, only content authored against the existing schema.
 
 ## Solutions & fixes log
 
