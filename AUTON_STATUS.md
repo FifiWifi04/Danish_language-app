@@ -29,7 +29,7 @@ file from anywhere — iterations re-read it on every firing.
 | 8 | 30-card pilot deck, generated per the template, `"status":"draft"` | PHASE2 WS-B | done@2975a0d | — |
 | 9 | Mode A review UI (reveal + Again/Hard/Good), draft badge on draft cards | PHASE3 WS-A | done@cc14779 | — |
 | 10 | PWA: manifest, precache, offline, update-available toast | PHASE3 WS-B | done@35b0a16 | — |
-| 11 | Stats view + append-only session log + streak/due counts | PHASE3 WS-C | todo | — |
+| 11 | Stats view + append-only session log + streak/due counts | PHASE3 WS-C | done@f11292c | — |
 | 12 | Progress export/import (JSON file) + stale-backup nudge | PHASE3 WS-D | todo | — |
 | 13 | Pronunciation guide content file (~12 phenomena, mechanics, DRAFT) + add `soundTags` to the 10 sound-coverage pilot cards (deferred from item 8 — see its log entry) | PRON WS-A | todo | — |
 | 14 | Udtale tab UI (guide browser) + `soundTags` links from cards | PRON WS-B | todo | — |
@@ -351,6 +351,40 @@ file from anywhere — iterations re-read it on every firing.
   (`node scripts/generate-icons.mjs`), matching the plan's "with a
   script, checked in." No UI(other tabs)/scheduler/content/progress-store
   touched.
+- 2026-08-08 — item 11 (PHASE3 WS-C stats view) done@f11292c, tier-1
+  verified (npm test: 59/59 across 11 files, incl. 7 new named `stats:`
+  tests for the pure helpers below; tsc --noEmit; vite build; npm run
+  validate 7/7 all green) AND tier-2 verified (Playwright 3/3, incl. new
+  `tests/e2e/stats.spec.ts` — completes a 3-card session, switches to the
+  Stats tab, asserts a `Streak: N days` line with N ≥ 1 and exactly one
+  `.session-row` containing "3 reviewed"; existing `review.spec.ts` and
+  `pwa-offline.spec.ts` still green). Four new pure `src/core/stats.ts`
+  functions, all unit-tested: `computeDueCounts` (due learning/relearning
+  steps + capped due reviews; new-card count gated on reviews being
+  cleared — mirrors `buildSession`'s own filtering exactly but without
+  consuming an RNG, since this is a display-only preview, not an actual
+  session draw), `computeRetention` ((good+hard)/reviewed over a trailing
+  window, `null` on zero reviews rather than a misleading 0%),
+  `last30DaysBars` (30 zero-filled day buckets ending at `today`), and
+  `countLeeches`. `src/ui/stats.ts` renders: due/new-remaining line,
+  streak, a plain-div bar strip (title attr carries the per-day count, no
+  chart lib per the plan), retention, leech count, backup status, and a
+  recent-sessions list (`.session-row` per entry, newest first, capped at
+  10) — wired into `src/ui/shell.ts`'s existing (previously unreachable)
+  `stats` tab case. Factored `src/ui/backup-status.ts`
+  (`LAST_EXPORT_KEY`/`BACKUP_NUDGE_DAYS`/`backupAgeDays`/
+  `backupStatusText`) out of what was inline in `review.ts`'s session-end
+  nudge so both WS-A's nudge and WS-C's always-visible "Backup: N days
+  ago" line share one source of truth instead of duplicating the
+  `localStorage` key and age math — `review.ts`'s nudge text and
+  threshold behaviour are unchanged, only the constant/computation moved.
+  **Deliberate, documented deviation (self-healing mandate, small and
+  in-scope):** the plan's WS-C text says the leech count should link "to
+  the rework list (PHASE5 WS-D)" — that item (queue #20) is still `todo`
+  and no such tab/route exists yet, so a link would 404. Rendered as a
+  plain "Leeches: N" count instead; when item 20 lands it should turn this
+  into a real link/anchor. No content/scheduler/dependency touched; the
+  content firewall wasn't in play (no `content/` file edited).
 
 ## Solutions & fixes log
 
