@@ -1,0 +1,126 @@
+{
+  "v": 1,
+  "type": "particle",
+  "items": [
+    {
+      "id": "particle.da",
+      "status": "draft",
+      "priority": 1,
+      "particle": "da",
+      "note_pl": "Partykuła 'da' łagodzi polecenie (nakłanianie, „no dalej”) albo podkreśla sprzeciw wobec czyjegoś stwierdzenia („to jednak nieprawda!”). Nie ma bezpośredniego odpowiednika w polskim — ton niesie znaczenie.",
+      "pairs": [
+        {
+          "withoutIt": "Kom nu.",
+          "withIt": "Kom nu da.",
+          "socialEffect_pl": "Bez 'da': neutralne/pilne polecenie „Chodź już”. Z 'da': łagodniejsze, przymilne nakłanianie — „no chodźże już”, jakby ktoś się ociąga."
+        },
+        {
+          "withoutIt": "Han er her ikke.",
+          "withIt": "Han er her da ikke!",
+          "socialEffect_pl": "Bez 'da': spokojne stwierdzenie „Go tu nie ma”. Z 'da': stanowczy sprzeciw wobec czyjejś opinii — „Przecież go tu NIE MA!”, jakby ktoś twierdził inaczej."
+        }
+      ],
+      "contentHash": "33d3002b11d68ed11f446fc46db2f306fbacd90b844fbaa70ea2cde1c349bb7f"
+    },
+    {
+      "id": "particle.jo",
+      "status": "draft",
+      "priority": 2,
+      "particle": "jo",
+      "note_pl": "Partykuła 'jo' przypomina o czymś, co rozmówca (rzekomo) już wie, albo podkreśla oczywistość stwierdzenia — „przecież”, „no wiadomo”. Może brzmieć lekko pouczająco, jeśli się przesadzi.",
+      "pairs": [
+        {
+          "withoutIt": "Det er svært.",
+          "withIt": "Det er jo svært.",
+          "socialEffect_pl": "Bez 'jo': neutralna obserwacja „To jest trudne”. Z 'jo': odwołanie do wspólnej wiedzy — „To jest przecież trudne (obaj to wiemy)”."
+        },
+        {
+          "withoutIt": "Du kan lide kaffe.",
+          "withIt": "Du kan jo lide kaffe.",
+          "socialEffect_pl": "Bez 'jo': proste stwierdzenie faktu. Z 'jo': przypomnienie komuś o czymś oczywistym — „Przecież lubisz kawę (więc...)”, często jako argument w rozmowie."
+        }
+      ],
+      "contentHash": "aaa52324415a90b5c287dfc8a1401ea04a1c8ea043aee8ffcdb4ddd633b25cad"
+    },
+    {
+      "id": "particle.lige",
+      "status": "draft",
+      "priority": 3,
+      "particle": "lige",
+      "note_pl": "Partykuła 'lige' pomniejsza prośbę lub czynność — sprawia, że brzmi ona jako drobna, szybka, mało kłopotliwa („tylko na chwilę”). Bardzo częste w uprzejmych prośbach.",
+      "pairs": [
+        {
+          "withoutIt": "Kom herover.",
+          "withIt": "Kom lige herover.",
+          "socialEffect_pl": "Bez 'lige': bezpośrednie polecenie „Chodź tutaj”. Z 'lige': swobodne, mniej narzucające zaproszenie — „Chodź no na chwilkę tutaj”."
+        },
+        {
+          "withoutIt": "Vent.",
+          "withIt": "Vent lige.",
+          "socialEffect_pl": "Bez 'lige': krótki, niemal ostry rozkaz „Czekaj”. Z 'lige': złagodzone, przyjazne „Poczekaj chwilkę”."
+        }
+      ],
+      "contentHash": "a78f9d72c7be31692c379927c07b0a6df5fce6756bbd8d67386de266c6ca3703"
+    },
+    {
+      "id": "particle.vel",
+      "status": "draft",
+      "priority": 4,
+      "particle": "vel",
+      "note_pl": "Partykuła 'vel' zamienia stwierdzenie w pytanie o potwierdzenie — „prawda?”, „chyba?”. Sygnalizuje, że mówiący oczekuje (lub ma nadzieję na) potwierdzenia, ale nie jest całkiem pewny.",
+      "pairs": [
+        {
+          "withoutIt": "Du kommer i morgen.",
+          "withIt": "Du kommer vel i morgen?",
+          "socialEffect_pl": "Bez 'vel': pewne stwierdzenie „Przyjdziesz jutro”. Z 'vel': pytanie z nadzieją na potwierdzenie — „Przyjdziesz jutro, prawda?”."
+        },
+        {
+          "withoutIt": "Det er ikke så svært.",
+          "withIt": "Det er vel ikke så svært?",
+          "socialEffect_pl": "Bez 'vel': stanowcze zapewnienie „To nie jest takie trudne”. Z 'vel': szukanie potwierdzenia z odrobiną niepewności — „To chyba nie jest takie trudne, prawda?”."
+        }
+      ],
+      "contentHash": "d2bc5150e587cafb5c82f7367ee3e62bdaed9159e2a022278bc383c8860f3a7c"
+    },
+    {
+      "id": "particle.nok",
+      "status": "draft",
+      "priority": 5,
+      "particle": "nok",
+      "note_pl": "Partykuła 'nok' osłabia pewność stwierdzenia — „pewnie”, „chyba”, „prawdopodobnie”. Pozwala coś powiedzieć, nie biorąc pełnej odpowiedzialności za stuprocentową pewność.",
+      "pairs": [
+        {
+          "withoutIt": "Han kommer.",
+          "withIt": "Han kommer nok.",
+          "socialEffect_pl": "Bez 'nok': pewne stwierdzenie „On przyjdzie”. Z 'nok': złagodzone przypuszczenie — „On pewnie przyjdzie” (ale nie jestem stuprocentowo pewien)."
+        },
+        {
+          "withoutIt": "Det er rigtigt.",
+          "withIt": "Det er nok rigtigt.",
+          "socialEffect_pl": "Bez 'nok': kategoryczne potwierdzenie „To prawda”. Z 'nok': ostrożna zgoda — „To chyba/pewnie prawda”, zostawia miejsce na wątpliwość."
+        }
+      ],
+      "contentHash": "4029a327a0c503a9937781dbcc53a4b6cae3245653a0a5e60e13051ae1182fe1"
+    },
+    {
+      "id": "particle.godt",
+      "status": "draft",
+      "priority": 6,
+      "particle": "godt",
+      "note_pl": "Jako partykuła modalna (nie zwykły przysłówek 'dobrze'), 'godt' wzmacnia pewność lub daje przyzwolenie — „spokojnie możesz”, „śmiało”. Często pojawia się przy czasownikach modalnych jak 'kan'.",
+      "pairs": [
+        {
+          "withoutIt": "Du kan gøre det.",
+          "withIt": "Du kan godt gøre det.",
+          "socialEffect_pl": "Bez 'godt': neutralne stwierdzenie możliwości „Możesz to zrobić”. Z 'godt': zachęcające zapewnienie — „Spokojnie możesz to zrobić”, dodaje pewności."
+        },
+        {
+          "withoutIt": "Vi kan spise nu.",
+          "withIt": "Vi kan godt spise nu.",
+          "socialEffect_pl": "Bez 'godt': proste stwierdzenie możliwości. Z 'godt': przyzwolenie/uspokojenie — „Możemy już spokojnie jeść”, sygnalizuje że nie ma przeszkód."
+        }
+      ],
+      "contentHash": "04faeb19b4357b6dbda670dd94c1d126763492db91be959ef580940ac98d5010"
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 import type { ProgressStore } from '../core/store';
 import type { Rating, SessionLogEntry } from '../core/types';
-import type { VocabItem } from '../data/content';
+import type { DeckItem } from '../data/deck';
+import { isParticleItem } from '../data/deck';
 import { buildSession } from '../core/session';
 import { schedule } from '../core/scheduler';
 import { materializeProgress } from '../core/progress';
@@ -10,6 +11,7 @@ import { mulberry32 } from '../core/rng';
 import { isModeBEligible } from '../core/spelling';
 import { renderCard } from './review-card';
 import { renderSpellCard } from './review-spell';
+import { renderParticleCard } from './review-particle';
 import { backupAgeDays, BACKUP_NUDGE_DAYS } from './backup-status';
 import { audioAutoplayEnabled, setAudioAutoplayEnabled } from './audio';
 
@@ -24,7 +26,7 @@ function currentTime(): { today: number; nowMinute: number } {
 }
 
 /** Renders the Mode A review session into `container`. Self-contained: no state escapes this call. */
-export function renderReview(container: HTMLElement, store: ProgressStore, deck: VocabItem[]): void {
+export function renderReview(container: HTMLElement, store: ProgressStore, deck: DeckItem[]): void {
   container.appendChild(renderAudioToggle());
 
   const wrapper = document.createElement('div');
@@ -47,7 +49,7 @@ function renderAudioToggle(): HTMLElement {
   return label;
 }
 
-async function start(wrapper: HTMLElement, store: ProgressStore, deck: VocabItem[]): Promise<void> {
+async function start(wrapper: HTMLElement, store: ProgressStore, deck: DeckItem[]): Promise<void> {
   const itemsById = new Map(deck.map((item) => [item.id, item]));
   const stored = await store.all();
   const progressById = new Map(materializeProgress(deck, stored).map((p) => [p.id, p]));
@@ -85,7 +87,9 @@ async function start(wrapper: HTMLElement, store: ProgressStore, deck: VocabItem
       });
     };
 
-    if (isModeBEligible(progress)) {
+    if (isParticleItem(item)) {
+      renderParticleCard(wrapper, item, progress, onRate);
+    } else if (isModeBEligible(progress)) {
       renderSpellCard(wrapper, item, progress, onRate);
     } else {
       renderCard(wrapper, item, progress, onRate);

@@ -1,0 +1,26 @@
+{
+  "v": 1,
+  "type": "particle",
+  "items": [
+    {
+      "id": "fixture.particle.da",
+      "status": "draft",
+      "priority": 1,
+      "particle": "da",
+      "note_pl": "Fixture note.",
+      "pairs": [
+        {
+          "withoutIt": "Kom nu.",
+          "withIt": "Kom nu da.",
+          "socialEffect_pl": "Fixture effect one."
+        },
+        {
+          "withoutIt": "Han er her ikke.",
+          "withIt": "Han er her da ikke!",
+          "socialEffect_pl": "Fixture effect two."
+        }
+      ],
+      "contentHash": "fixture-particle-da"
+    }
+  ]
+}

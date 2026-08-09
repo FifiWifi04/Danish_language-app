@@ -9,8 +9,11 @@ const RATINGS: [string, Rating][] = [
   ['Good', 'good'],
 ];
 
-/** Draft / content-changed badges for a card, shared by the reveal and spelling flows. */
-export function renderCardBadges(item: VocabItem, progress: Progress): HTMLElement {
+/** Draft / content-changed badges for a card, shared across every card type (vocab, spelling, particle). */
+export function renderCardBadges(
+  item: { status: 'draft' | 'reviewed'; contentHash: string },
+  progress: Progress,
+): HTMLElement {
   const badges = document.createElement('div');
   if (item.status === 'draft') badges.appendChild(makeBadge('DRAFT — unverified'));
   if (progress.contentHash && progress.contentHash !== item.contentHash) {

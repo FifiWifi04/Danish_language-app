@@ -1,5 +1,5 @@
 import type { ProgressStore } from '../core/store';
-import type { VocabItem } from '../data/content';
+import type { DeckItem } from '../data/deck';
 import { renderReview } from './review';
 import { renderStats } from './stats';
 import { renderUdtale } from './udtale';
@@ -8,7 +8,7 @@ export type TabId = 'review' | 'udtale' | 'stats';
 
 export interface ShellDeps {
   store: ProgressStore;
-  deck: VocabItem[];
+  deck: DeckItem[];
 }
 
 interface TabDef {

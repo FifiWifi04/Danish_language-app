@@ -1,6 +1,6 @@
 import { renderShell } from './ui/shell';
 import { IdbStore } from './data/idb';
-import { loadVocabDeck } from './data/content';
+import { loadDeck } from './data/deck';
 import { sharedAudioElement } from './ui/audio';
 import { initPwa } from './pwa';
 import type { ProgressStore } from './core/store';
@@ -17,7 +17,7 @@ async function bootstrap(): Promise<void> {
   if (!root) return;
 
   const search = window.location.search;
-  const deck = await loadVocabDeck(import.meta.env.BASE_URL, search);
+  const deck = await loadDeck(import.meta.env.BASE_URL, search);
   const store = new IdbStore();
   renderShell(root, { store, deck });
 

@@ -1,6 +1,6 @@
 import type { ProgressStore } from '../core/store';
 import type { SessionLogEntry } from '../core/types';
-import type { VocabItem } from '../data/content';
+import type { DeckItem } from '../data/deck';
 import { materializeProgress } from '../core/progress';
 import { computeStreak, computeDueCounts, computeRetention, last30DaysBars, countLeeches } from '../core/stats';
 import { dayNumber, minuteNumber } from '../core/time';
@@ -12,7 +12,7 @@ const RETENTION_WINDOW_DAYS = 30;
 const RECENT_SESSIONS_SHOWN = 10;
 
 /** Renders the Stats tab into `container`. Self-contained: no state escapes this call. */
-export function renderStats(container: HTMLElement, store: ProgressStore, deck: VocabItem[]): void {
+export function renderStats(container: HTMLElement, store: ProgressStore, deck: DeckItem[]): void {
   const wrapper = document.createElement('div');
   wrapper.className = 'stats-wrapper';
   wrapper.textContent = 'Loading…';
@@ -21,7 +21,7 @@ export function renderStats(container: HTMLElement, store: ProgressStore, deck: 
   void start(wrapper, store, deck);
 }
 
-async function start(wrapper: HTMLElement, store: ProgressStore, deck: VocabItem[]): Promise<void> {
+async function start(wrapper: HTMLElement, store: ProgressStore, deck: DeckItem[]): Promise<void> {
   const [stored, log] = await Promise.all([store.all(), store.sessionLog()]);
   const all = materializeProgress(deck, stored);
 
