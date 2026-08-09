@@ -104,15 +104,17 @@ content/              deck source of truth (JSON, hand-checked)
   deck.v1.json
   particles.v1.json
   pronunciation.v1.json   Udtale lab guide entries (rev 1.1, PLAN_PRONUNCIATION.md)
-scripts/              offline tooling, run locally only
-  validate-deck.ts
-  build-audio.ts
-  audio-manifest.json
+scripts/              offline tooling, plain ESM .mjs, run locally only
+  validate-content.mjs      + content-item-schemas.mjs (schema validators)
+  build-audio.mjs           + audio-lib.mjs, providers/<name>.mjs
+  generate-icons.mjs        + png-encoder.mjs (dependency-free PWA icons)
 src/
   core/               pure: scheduler, session queue, store interface, time, rng
   data/               IndexedDB progress store (+ memory adapter for tests)
-  ui/                 views: shell, review, udtale, stats, backup, audio
+  ui/                 views: shell, review (+ spell/particle variants),
+                       udtale, stats, backup, audio, flag, rework
 public/audio/         generated mp3, committed
+public/audio-manifest.json   text→filename map written by build-audio.mjs
 tests/                unit + simulation soak + e2e/ Playwright smokes
 docs/DECISIONS.md
 CLAUDE.md
@@ -172,7 +174,7 @@ This harness is the highest-value artifact in the project. It is what makes it s
 **Phase 3 — Minimum usable app.** Mode A only, offline-capable, installable.
 *Gate:* **seven consecutive days of actual daily use.** This is behavioural, not technical, and it is not negotiable — an app that isn't opened is a failed app regardless of scheduler quality.
 
-**Phase 4 — Audio, offline generation only.** `scripts/build-audio.ts` runs locally, reads the API key from `.env` (never committed, never shipped to the client), writes `public/audio/<hash>.mp3` where the hash covers text + voice + provider, and updates `audio-manifest.json`. Anything already in the manifest is skipped, so unchanged cards are never re-billed. Roughly 500 clips at ~15KB is under 10MB committed — fine for git, no LFS needed. Forvo for single words, TTS for phrases.
+**Phase 4 — Audio, offline generation only.** `scripts/build-audio.mjs` runs locally, reads the API key from `.env` (never committed, never shipped to the client), writes `public/audio/<hash>.mp3` where the hash covers text + voice + provider, and updates `public/audio-manifest.json` (moved from `scripts/` so Vite serves it at runtime — `playFor` fetches it directly). Anything already in the manifest is skipped, so unchanged cards are never re-billed. Roughly 500 clips at ~15KB is under 10MB committed — fine for git, no LFS needed. TTS-only for v1 (Forvo parked — REVIEW.md A.4).
 *Gate:* airplane mode, complete session, all audio plays.
 
 **Phase 5 — Modes B and C.** Active spelling with an æ/ø/å button row above the input and `ae`/`oe`/`aa` accepted as equivalent; dictation mode. Promotion to spelling at `repetitions >= 2`. Particle cards implemented as a distinct type using contrastive minimal pairs.

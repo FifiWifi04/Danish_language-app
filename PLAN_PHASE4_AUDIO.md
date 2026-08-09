@@ -19,9 +19,12 @@ Contract:
   `TTS_API_KEY`, `TTS_VOICE`. `.env` is gitignored in this WS if not
   already.
 - Output `public/audio/<sha256(text|voice|provider).slice(0,16)>.mp3`;
-  `scripts/audio-manifest.json` maps `text → filename` plus `{voice,
-  provider, generatedAt}`. Anything already in the manifest with an
-  existing file is **skipped** — unchanged cards are never re-billed.
+  `public/audio-manifest.json` maps `text → filename` plus `{voice,
+  provider, generatedAt}` — lives under `public/`, not `scripts/`, so
+  Vite serves it at runtime for WS-B's `playFor` to fetch (see
+  `docs/DECISIONS.md`/AUTON_STATUS item 16 log). Anything already in the
+  manifest with an existing file is **skipped** — unchanged cards are
+  never re-billed.
 - Provider calls are isolated in `scripts/providers/<name>.mjs` with a
   `synthesize(text, voice, key): Promise<Uint8Array>` signature; a
   `fake` provider returns a 1-byte buffer for tests. Default provider:

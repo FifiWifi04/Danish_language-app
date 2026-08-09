@@ -126,6 +126,19 @@ Why this and not the alternatives:
 Edge case, intended: when the pending interval is already 1 day, Hard and
 Good coincide. The interval floor of 1 wins over the halving.
 
+## 2026-08-09 — Audio manifest lives at `public/audio-manifest.json`, not `scripts/`
+
+`PLAN_PHASE4_AUDIO.md` WS-A originally wrote the manifest to `scripts/
+audio-manifest.json`, matching HANDOFF §4.2's repo-shape sketch. WS-B's
+`playFor` (`src/ui/audio.ts`) needs to `fetch` it at runtime, and Vite
+only serves `public/` (plus the bundled `src/`) — `scripts/` never
+reaches `dist/`. Moved the write target in `scripts/build-audio.mjs` to
+`public/audio-manifest.json` (already covered by the existing PWA
+precache `json` glob, so no `vite.config.ts` change was needed). Not a
+scheduler or content-shape change; `HANDOFF.md` §4.2/§4.6 and
+`PLAN_PHASE4_AUDIO.md` updated to match. Source: AUTON_STATUS item 16 log
+entry.
+
 ## 2026-08-09 — Rework-list "Unsuspend & retry" resets schedule, not history
 
 `PLAN_PHASE5_MODES.md` WS-D's rework list lets the owner pull a leech (8+

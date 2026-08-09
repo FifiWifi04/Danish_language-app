@@ -45,7 +45,7 @@ npm run preview      # serve the built bundle for smoke tests
    must never require a progress migration.
 6. **Due dates are day numbers** (integer days since epoch, 4 am local
    cutoff), never timestamps.
-7. **No secrets in the client or the repo.** `scripts/build-audio.ts`
+7. **No secrets in the client or the repo.** `scripts/build-audio.mjs`
    reads keys from `.env` (gitignored) and runs locally only.
 8. **Keep files under ~200 lines.** Split rather than grow.
 9. **Danish/Polish/English strings**: UI chrome is English; learning
