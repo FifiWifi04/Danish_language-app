@@ -38,7 +38,7 @@ file from anywhere — iterations re-read it on every firing.
 | 17 | Self-record & compare in the Udtale tab (MediaRecorder, no scoring) | PRON WS-D | done@87e8d4a | — |
 | 18 | Mode B active spelling: æ/ø/å button row, `ae/oe/aa` equivalence, promotion at reps ≥ 2 | PHASE5 WS-A | done@5033fd0 | — |
 | 19 | Particle cards: contrastive-pair card type, pilot content DRAFT | PHASE5 WS-C | done@0d0f8a0 | — |
-| 20 | Leech rework list + in-review "flag card" + undo last rating | PHASE5 WS-D | todo | — |
+| 20 | Leech rework list + in-review "flag card" + undo last rating | PHASE5 WS-D | done@2b33a65 | — |
 | 21 | Minimal-pair perception drill (real clips only — TTS fallback forbidden here) | PRON WS-C | blocked | G2 |
 | 22 | Mode C dictation | PHASE5 WS-B | blocked | G2 |
 | 23 | Docs sweep: HANDOFF re-sync to what exists, DECISIONS completeness, test-list sync | — | todo (take last) | — |
@@ -736,6 +736,73 @@ file from anywhere — iterations re-read it on every firing.
   added; content firewall respected (no `"status":"reviewed"` file
   touched — `content/particles.v1.json` is new and all-draft). Item 20
   (PHASE5 WS-D leech rework/flag/undo) is next per queue order.
+
+- 2026-08-09 — item 20 (PHASE5 WS-D leech rework list + flag + undo)
+  done@2b33a65, tier-1 verified (npm test: 88/88 across 19 files incl. 2
+  new named `rework:` tests, 1 new named `undo:` test, and a new
+  `stats: flaggedEntries` test; tsc --noEmit; vite build; npm run
+  validate 7/7 all green) AND tier-2 verified (Playwright 13/13, incl.
+  new `tests/e2e/flag.spec.ts` — reveals the fixture deck's first card,
+  flags it "Content wrong", finishes the 3-card session, opens Stats, and
+  asserts the `.flagged-block textarea` reads exactly
+  `fixture.one: content`; existing 12 specs still green). Two new pure
+  `src/core/` modules: `rework.ts` (`unsuspendForRework` — isLeech→false,
+  state→review, intervalDays→1, dueDay→today+1, `dueMinute`→null, leaves
+  `lapses`/`reps`/`ease` untouched so history survives, per the plan's own
+  "lapses→0? NO" note; `flagForRework` — sets `flagged:'rework-request'`
+  only) and `undo.ts` (`captureSnapshot`/`applyUndo`, trivial pure
+  wrappers around "return the prior Progress" — extracted so the named
+  `undo:` test could assert the invariant without spinning up jsdom/UI
+  closures). `src/ui/rework.ts` (new, 80 lines) renders the rework list
+  at `#stats/rework` (a sub-route on the existing Stats tab, reusing
+  `shell.ts`'s `detailFromHash` mechanism already built for Udtale in
+  item 14, rather than adding a fourth top-level tab): every `isLeech`
+  card with its lapse count and current flag, "Unsuspend & retry" and
+  "Needs rewrite" buttons that call the two core functions and
+  `store.put`. `src/ui/stats.ts`'s "Leeches: N" line is now an `<a
+  href="#stats/rework">` (closing out item 11's logged deferral) and
+  gained a copyable `<textarea readonly>` block (`core/stats.ts`'s new
+  `flaggedEntries`) with a Copy button
+  (`navigator.clipboard.writeText`), shown only when at least one card is
+  flagged. `src/ui/flag.ts` (new, 51 lines) is the shared flag control —
+  a toggle revealing 4 reason buttons (content/audio/phonetic/other,
+  stored as short codes, not the button labels) — wired into every card
+  back: `review-card.ts`'s `renderBack` (now takes `flagged`/`onFlag`,
+  reused unchanged by `review-spell.ts`'s reveal/escape-hatch) and
+  `review-particle.ts`'s `reveal()` (appended after `renderPairs`, since
+  particle cards don't share `renderBack`). `review.ts`'s `showCard()`
+  now builds an `onFlag` closure per card (mirrors `onRate`'s existing
+  pattern) that reads the *current* `progressById` entry rather than the
+  stale one captured at card-display time — required so flag-then-rate in
+  the same card view doesn't have the rating's `schedule()` call silently
+  drop the just-set flag. Undo: `onRate` now calls `captureSnapshot`
+  before scheduling; a `↺ Undo last rating` button renders (appended
+  after the card, so the per-type renderers' own
+  `wrapper.textContent = ''` doesn't wipe it) whenever a snapshot exists;
+  clicking it restores the prior `Progress`, decrements that rating's
+  session-summary count, persists the revert, and resets `index` back to
+  the undone card's queue position so it's shown next — satisfying "one
+  level deep" (the snapshot is cleared on use and overwritten by the next
+  rating) and "returns the card to the queue front" (it's literally the
+  next card shown). Undo and the rework list's two actions were also
+  manually verified end-to-end against a running preview build (mic-free,
+  via the existing e2e store hooks) before committing — not checked in as
+  specs, since the plan's own "Smoke:" line for WS-D names only the flag
+  → Stats-block path, matching every prior WS's "the plan names the
+  smoke test" convention.
+  **New DECISIONS.md entry**, per the plan's own explicit "add a
+  DECISIONS entry" instruction for the unsuspend behaviour: documents
+  which `Progress` fields `unsuspendForRework` touches vs. preserves, and
+  why this isn't a `schedule()`/transition-table change (it's a distinct
+  user action outside the rating flow; `schedule()` never sees a
+  `suspended` card by construction, since the session queue already
+  excludes leeches). No dependency added; content firewall respected (no
+  `content/*.json` touched). Existing `tests/particles.test.ts` call
+  sites updated to pass a no-op 5th `onFlag` arg after
+  `renderParticleCard`'s signature grew one parameter — no behaviour
+  change to what those 4 tests assert. Item 21 (PRON WS-C minimal-pair
+  drill) and item 22 (PHASE5 WS-B dictation) remain `blocked` on G2; item
+  23 (docs sweep) is next per queue order ("take last").
 
 ## Solutions & fixes log
 
