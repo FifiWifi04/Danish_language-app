@@ -34,7 +34,7 @@ file from anywhere — iterations re-read it on every firing.
 | 13 | Pronunciation guide content file (~12 phenomena, mechanics, DRAFT) + add `soundTags` to the 10 sound-coverage pilot cards (deferred from item 8 — see its log entry) | PRON WS-A | done@e0d2987 | — |
 | 14 | Udtale tab UI (guide browser) + `soundTags` links from cards | PRON WS-B | done@edf4814 | — |
 | 15 | Audio build script + manifest + fake-provider tests (no real key use) | PHASE4 WS-A | done@95ff9d4 | — |
-| 16 | Audio playback wiring in Mode A (manifest-driven, silent degrade) | PHASE4 WS-B | todo | — |
+| 16 | Audio playback wiring in Mode A (manifest-driven, silent degrade) | PHASE4 WS-B | done@678a275 | — |
 | 17 | Self-record & compare in the Udtale tab (MediaRecorder, no scoring) | PRON WS-D | todo | — |
 | 18 | Mode B active spelling: æ/ø/å button row, `ae/oe/aa` equivalence, promotion at reps ≥ 2 | PHASE5 WS-A | todo | — |
 | 19 | Particle cards: contrastive-pair card type, pilot content DRAFT | PHASE5 WS-C | todo | — |
@@ -518,6 +518,67 @@ file from anywhere — iterations re-read it on every firing.
   real manifest to wire against meaningfully; it's still buildable
   against a fixture manifest per its own plan text, so left `todo` for
   the next firing per the one-workstream bound.
+
+- 2026-08-09 — item 16 (PHASE4 WS-B audio playback wiring) done@678a275,
+  tier-1 verified (npm test: 72/72 across 14 files incl. 6 new named
+  `audio:` tests; tsc --noEmit; vite build; npm run validate 7/7 all
+  green) AND tier-2 verified (Playwright 8/8, incl. new
+  `tests/e2e/audio.spec.ts` — reveals the fixture deck's first card
+  ("et", which the fixture manifest has a clip for), asserts the 🔊 Play
+  button becomes visible, clicks it, and polls `window.__e2eAudio()`
+  (new e2e-only accessor mirroring `window.__e2eStore`'s pattern) until
+  `.paused === false`; a second test rates that card away, reveals the
+  next one ("to", no fixture clip), and asserts the button stays hidden;
+  existing review/pwa-offline/stats/backup/udtale specs still green).
+  `src/ui/audio.ts` (new, 72 lines): `clipFor`/`playFor` per the plan's
+  signature, manifest fetched once and memoized in a module-level
+  promise, played through one shared `<audio>` element; `playFor`
+  resolves `false` silently on any manifest miss or playback rejection —
+  deliberately no `speechSynthesis` fallback (HANDOFF §3.4, a wrong stød
+  drilled forty times is worse than silence). `audioAutoplayEnabled`/
+  `setAudioAutoplayEnabled` back a `localStorage` toggle (UI preference,
+  not progress data) rendered once per review session in `review.ts`
+  (`renderAudioToggle`, outside the per-card `wrapper` so it survives
+  `review-card.ts`'s per-card `wrapper.textContent = ''` clear).
+  `review-card.ts`'s audio button now starts `hidden` (was `disabled`)
+  and only unhides once `clipFor` resolves a hit, matching the plan's
+  "audio button simply hides when the clip is missing" exactly; on
+  unhide, auto-plays if the toggle is on. Also closed out item 14's
+  logged deferred TODO: `udtale-detail.ts`'s practice-word chips now
+  call `playFor(pw.word)` on click instead of rendering `disabled` —
+  they stay clickable regardless of manifest coverage (the word text is
+  informational on its own) and degrade silently on a miss, same as the
+  review card's button behaviour once revealed.
+  **Deliberate, documented decision (small, in-scope, forced by how Vite
+  serves files — not a product-judgement STOP):** moved
+  `scripts/build-audio.mjs`'s `MANIFEST_PATH` from `scripts/
+  audio-manifest.json` to `public/audio-manifest.json`. WS-B's own text
+  says `playFor` "look[s] up the manifest (fetched once, cached)" and
+  separately asks to "confirm the PWA glob picks up audio/ + the
+  manifest" — neither is possible from `scripts/`, since Vite only
+  serves `public/` (and the bundled `src/`) at runtime; `scripts/` never
+  reaches `dist/`. Moving the write target into `public/` (already
+  covered by the existing `json` glob entry from item 10, so no
+  `vite.config.ts` change was needed) is the only reading that makes
+  WS-B's two stated requirements possible at all — not a scheduler
+  change, no new dependency, doesn't touch `content/` or the audio-lib
+  unit tests (which pass `existingFiles`/`manifest` in directly and
+  never reference the path constant). HANDOFF §4.2's repo-shape tree
+  still lists it under `scripts/`; that diagram is documentation, not a
+  binding path per CLAUDE.md, so it's now stale and worth a note in the
+  eventual docs sweep (item 23) rather than a blocker here.
+  No real manifest exists yet (G2 — real audio generation — is still
+  open), so `public/audio-manifest.json` and `public/audio/*.mp3` are
+  still absent from the repo; the fixture manifest + a hand-built
+  8-bit-PCM WAV (named `.wav`, not `.mp3` — honest about not being a
+  real MP3, and format-agnostic since `playFor` just plays whatever
+  filename the manifest gives it) under `public/e2e-fixtures/` stand in
+  for the smoke test only, gated behind the same `?e2eDeck=1` flag
+  `data/content.ts` already uses (no second query param invented).
+  `audioButton`/practice-word chips keep the plan's 48px min-height
+  convention from the rating buttons. No scheduler/content/dependency
+  touched; the content firewall wasn't in play (no `content/` file
+  edited).
 
 ## Solutions & fixes log
 
