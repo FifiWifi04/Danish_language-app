@@ -35,7 +35,7 @@ file from anywhere — iterations re-read it on every firing.
 | 14 | Udtale tab UI (guide browser) + `soundTags` links from cards | PRON WS-B | done@edf4814 | — |
 | 15 | Audio build script + manifest + fake-provider tests (no real key use) | PHASE4 WS-A | done@95ff9d4 | — |
 | 16 | Audio playback wiring in Mode A (manifest-driven, silent degrade) | PHASE4 WS-B | done@678a275 | — |
-| 17 | Self-record & compare in the Udtale tab (MediaRecorder, no scoring) | PRON WS-D | todo | — |
+| 17 | Self-record & compare in the Udtale tab (MediaRecorder, no scoring) | PRON WS-D | done@87e8d4a | — |
 | 18 | Mode B active spelling: æ/ø/å button row, `ae/oe/aa` equivalence, promotion at reps ≥ 2 | PHASE5 WS-A | todo | — |
 | 19 | Particle cards: contrastive-pair card type, pilot content DRAFT | PHASE5 WS-C | todo | — |
 | 20 | Leech rework list + in-review "flag card" + undo last rating | PHASE5 WS-D | todo | — |
@@ -579,6 +579,44 @@ file from anywhere — iterations re-read it on every firing.
   convention from the rating buttons. No scheduler/content/dependency
   touched; the content firewall wasn't in play (no `content/` file
   edited).
+
+- 2026-08-09 — item 17 (PRON WS-D self-record & compare) done@87e8d4a,
+  tier-1 verified (npm test: 75/75 across 15 files incl. 3 new named
+  `record:` tests; tsc --noEmit; vite build all green) AND tier-2 verified
+  (Playwright 9/9, incl. new `tests/e2e/record.spec.ts` — reveals the
+  fixture deck's first card ("et", which has a clip), clicks the record
+  button, asserts it toggles to "⏹ Stop recording", clicks it again as a
+  manual early stop, and asserts the "Yours" replay button becomes
+  enabled; existing 8 specs still green). `src/ui/record.ts` (new, 90
+  lines): `renderRecordControl(container, referenceText)` feature-detects
+  `MediaRecorder`/`navigator.mediaDevices.getUserMedia` and renders nothing
+  at all when absent (older iOS, per the plan); otherwise renders a plain
+  explanation line, a record button (mic requested on click, ≤5s auto-stop
+  via `setTimeout` or an earlier manual click-to-stop), and "Yours"/
+  "Reference" replay buttons. The recorded `Blob`'s object URL lives only
+  in memory for the control's lifetime (revoked on the next recording,
+  never uploaded, never written to the progress store) — no scoring of any
+  kind, per PARKED_GATES. `playwright.config.ts` gained Chromium's
+  `--use-fake-device-for-media-stream --use-fake-ui-for-media-stream`
+  launch args (plus `permissions:['microphone']` in the new spec) so the
+  smoke test runs without a real mic or an interactive permission prompt;
+  harmless to every other spec since none of them touch media.
+  **Reading decision (small, in-scope, not a STOP case — documented per
+  the self-healing mandate):** the plan's WS-D text places the control "on
+  an item detail page and on card backs with audio." Read as two distinct
+  single-widget locations: unconditionally on the Udtale detail page
+  (referenced against `item.practiceWords[0].word`, the item's first and
+  most prominent practice word — no picker UI, since the plan gives one
+  button per location, not one per word) and, on review card backs, nested
+  inside the existing `clipFor(item.danish).then(...)` hit callback so it
+  only appears once the card actually "has audio" (mirroring the 🔊 Play
+  button's own gating right next to it). The detail-page instance's
+  `Reference` button degrades silently on a manifest miss exactly like
+  item 16's practice-word chips already do (`playFor` resolving false) —
+  same "always clickable, degrades silently" precedent, not a new pattern.
+  No dependency/scheduler/content/progress-store touched; the content
+  firewall wasn't in play (no `content/` file edited). Item 18 (PHASE5
+  WS-A Mode B active spelling) is next per queue order.
 
 ## Solutions & fixes log
 
