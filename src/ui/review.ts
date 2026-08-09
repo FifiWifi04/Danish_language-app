@@ -9,6 +9,7 @@ import { dayNumber, minuteNumber } from '../core/time';
 import { mulberry32 } from '../core/rng';
 import { renderCard } from './review-card';
 import { backupAgeDays, BACKUP_NUDGE_DAYS } from './backup-status';
+import { audioAutoplayEnabled, setAudioAutoplayEnabled } from './audio';
 
 const DEFAULT_CAPS = { newPerDay: 20, reviewsPerDay: 200 };
 
@@ -22,12 +23,26 @@ function currentTime(): { today: number; nowMinute: number } {
 
 /** Renders the Mode A review session into `container`. Self-contained: no state escapes this call. */
 export function renderReview(container: HTMLElement, store: ProgressStore, deck: VocabItem[]): void {
+  container.appendChild(renderAudioToggle());
+
   const wrapper = document.createElement('div');
   wrapper.className = 'review-wrapper';
   wrapper.textContent = 'Loading…';
   container.appendChild(wrapper);
 
   void start(wrapper, store, deck);
+}
+
+function renderAudioToggle(): HTMLElement {
+  const label = document.createElement('label');
+  label.className = 'audio-autoplay-toggle';
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.checked = audioAutoplayEnabled();
+  checkbox.addEventListener('change', () => setAudioAutoplayEnabled(checkbox.checked));
+  label.appendChild(checkbox);
+  label.appendChild(document.createTextNode(' Auto-play audio on reveal'));
+  return label;
 }
 
 async function start(wrapper: HTMLElement, store: ProgressStore, deck: VocabItem[]): Promise<void> {

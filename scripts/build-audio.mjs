@@ -14,7 +14,10 @@ import { synthesize as elevenlabsSynthesize } from './providers/elevenlabs.mjs';
 const ROOT = process.cwd();
 const CONTENT_DIR = join(ROOT, 'content');
 const AUDIO_DIR = join(ROOT, 'public/audio');
-const MANIFEST_PATH = join(ROOT, 'scripts/audio-manifest.json');
+// Lives under public/, not scripts/, so PHASE4 WS-B's `src/ui/audio.ts` can
+// fetch it at runtime and the PWA precache glob (already covering `json`,
+// item 10) picks it up automatically — `scripts/` is never served.
+const MANIFEST_PATH = join(ROOT, 'public/audio-manifest.json');
 
 const PROVIDERS = { elevenlabs: elevenlabsSynthesize, fake: fakeSynthesize };
 

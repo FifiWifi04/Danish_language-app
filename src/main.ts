@@ -1,12 +1,14 @@
 import { renderShell } from './ui/shell';
 import { IdbStore } from './data/idb';
 import { loadVocabDeck } from './data/content';
+import { sharedAudioElement } from './ui/audio';
 import { initPwa } from './pwa';
 import type { ProgressStore } from './core/store';
 
 declare global {
   interface Window {
     __e2eStore?: ProgressStore;
+    __e2eAudio?: () => HTMLAudioElement | null;
   }
 }
 
@@ -21,6 +23,7 @@ async function bootstrap(): Promise<void> {
 
   if (new URLSearchParams(search).get('e2eDeck') === '1') {
     window.__e2eStore = store;
+    window.__e2eAudio = sharedAudioElement;
   }
 
   initPwa();

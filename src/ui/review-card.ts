@@ -1,5 +1,6 @@
 import type { Progress, Rating } from '../core/types';
 import type { VocabItem } from '../data/content';
+import { audioAutoplayEnabled, clipFor, playFor } from './audio';
 
 const RATINGS: [string, Rating][] = [
   ['Again', 'again'],
@@ -92,8 +93,16 @@ function renderBack(back: HTMLElement, item: VocabItem): void {
 
   const audioButton = document.createElement('button');
   audioButton.textContent = '🔊 Play';
-  audioButton.disabled = true;
+  audioButton.style.minHeight = '48px';
+  audioButton.hidden = true; // stays hidden if the manifest has no clip for this card (silent degrade, no TTS fallback)
+  audioButton.addEventListener('click', () => void playFor(item.danish));
   back.appendChild(audioButton);
+
+  void clipFor(item.danish).then((entry) => {
+    if (!entry) return;
+    audioButton.hidden = false;
+    if (audioAutoplayEnabled()) void playFor(item.danish);
+  });
 
   if (item.soundTags && item.soundTags.length > 0) {
     const chips = document.createElement('div');

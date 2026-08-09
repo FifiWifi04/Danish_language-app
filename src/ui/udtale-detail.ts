@@ -1,4 +1,5 @@
 import type { PronunciationItem } from '../data/pronunciation';
+import { playFor } from './audio';
 
 /** Renders one pronunciation item's detail view into `wrapper`. */
 export function renderUdtaleDetail(wrapper: HTMLElement, item: PronunciationItem, onBack: () => void): void {
@@ -48,13 +49,11 @@ function renderPracticeWords(item: PronunciationItem): HTMLElement {
   const list = document.createElement('div');
   list.className = 'practice-words';
   for (const pw of item.practiceWords) {
-    // PHASE4 WS-B's audio manifest/`playFor` doesn't exist yet — disabled,
-    // matching the review card's own audio-button silent degrade.
     const chip = document.createElement('button');
     chip.className = 'practice-word-chip';
     chip.textContent = pw.word;
     chip.title = pw.gloss_pl;
-    chip.disabled = true;
+    chip.addEventListener('click', () => void playFor(pw.word));
     list.appendChild(chip);
   }
   return list;
