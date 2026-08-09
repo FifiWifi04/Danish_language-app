@@ -36,7 +36,7 @@ file from anywhere — iterations re-read it on every firing.
 | 15 | Audio build script + manifest + fake-provider tests (no real key use) | PHASE4 WS-A | done@95ff9d4 | — |
 | 16 | Audio playback wiring in Mode A (manifest-driven, silent degrade) | PHASE4 WS-B | done@678a275 | — |
 | 17 | Self-record & compare in the Udtale tab (MediaRecorder, no scoring) | PRON WS-D | done@87e8d4a | — |
-| 18 | Mode B active spelling: æ/ø/å button row, `ae/oe/aa` equivalence, promotion at reps ≥ 2 | PHASE5 WS-A | todo | — |
+| 18 | Mode B active spelling: æ/ø/å button row, `ae/oe/aa` equivalence, promotion at reps ≥ 2 | PHASE5 WS-A | done@5033fd0 | — |
 | 19 | Particle cards: contrastive-pair card type, pilot content DRAFT | PHASE5 WS-C | todo | — |
 | 20 | Leech rework list + in-review "flag card" + undo last rating | PHASE5 WS-D | todo | — |
 | 21 | Minimal-pair perception drill (real clips only — TTS fallback forbidden here) | PRON WS-C | blocked | G2 |
@@ -617,6 +617,62 @@ file from anywhere — iterations re-read it on every firing.
   No dependency/scheduler/content/progress-store touched; the content
   firewall wasn't in play (no `content/` file edited). Item 18 (PHASE5
   WS-A Mode B active spelling) is next per queue order.
+
+- 2026-08-09 — item 18 (PHASE5 WS-A Mode B active spelling) done@5033fd0,
+  tier-1 verified (npm test: 80/80 across 16 files incl. 5 new named
+  `spell:` tests; tsc --noEmit; vite build; npm run validate 7/7 all
+  green) AND tier-2 verified (Playwright 11/11, incl. new
+  `tests/e2e/spell.spec.ts` — seeds a `state:'review', reps:2` progress
+  row for the fixture deck's `fixture.two` via `__e2eStore.put` then
+  reloads, types "toe" into the spelling input and asserts it's accepted
+  as an exact match for "tø" — oe→ø digraph equivalence — progress
+  advances to `reps:3` and the session moves to the next card; a second
+  test types a wrong answer, asserts a `.spell-char-wrong` diff span and
+  the Again/Hard/Good row appear, rates Hard, and asserts the card stays
+  in `state:'review'` with `reps:3`, matching row 9 — not a lapse;
+  existing audio/backup/pwa-offline/record/review/stats/udtale specs
+  still green). `src/core/spelling.ts` (new, pure, 49 lines):
+  `normalizeSpelling` (trim, lowercase, `ae→æ`/`oe→ø`/`aa→å`, applied
+  identically to both sides so it doesn't matter which one carries the
+  digraph — "both directions" per the plan), `isSpellingMatch`,
+  `spellingDiff` (per-char diff built from the *target's* own letters so
+  a highlighted miss still shows the correct spelling, not just the
+  user's wrong one), `firstWrongIndex`, and `isModeBEligible` (the
+  promotion rule verbatim — `state==='review' && reps>=2`, HANDOFF §3.8).
+  `src/ui/review-spell.ts` (new, 125 lines) renders the Mode B card:
+  emoji + english/polish prompt (the Danish word itself is withheld,
+  unlike the normal reveal card whose front already shows it), a text
+  input with `aria-label="Danish spelling"`, an æ ø å Æ Ø Å row that
+  inserts at the caret, a "Check answer" button (also wired to Enter),
+  and a "Show answer" escape hatch. Exact match → renders a "✓ Correct"
+  line and calls `onRate('good')` directly (read as the plan's "auto-Good
+  prompt" — no extra click, since a byte-exact typed answer is
+  unambiguous); a mismatch → renders `spellingDiff`'s per-char spans
+  (`.spell-char-ok`/`.spell-char-wrong`) and falls through to the same
+  reveal used by "Show answer": `renderBack` (translations, audio, sound
+  tags) plus the full Again/Hard/Good row for honest self-rating, per the
+  plan's "self-graded, like Anki." `src/ui/review-card.ts` had
+  `renderCardBadges`/`renderRatingButtons` extracted and `renderBack`
+  exported (was private) so `review-spell.ts` reuses them exactly rather
+  than duplicating the back-content/audio/sound-tag-chip logic —
+  `renderCard`'s own rendered output is byte-identical to before, only
+  the internals were factored out (all 75 pre-existing tests plus the 5
+  new ones stayed green, confirming no behaviour drift). `src/ui/
+  review.ts`'s `showCard()` now branches on `isModeBEligible(progress)` to
+  pick `renderSpellCard` vs `renderCard`; both share the exact same
+  `onRate` closure (schedule + store.put + advance), so `schedule()` and
+  the transition table are completely untouched — only the UI eliciting a
+  rating changed, not what a rating *does* — so no `docs/DECISIONS.md`
+  entry was needed (confirmed against CLAUDE.md rule 2: that rule guards
+  scheduler *behaviour*, not the input surface). `public/e2e-fixtures/
+  deck.fixture.json`'s `fixture.two` danish field changed from "to" to
+  "tø" so the smoke test has a digraph-testable target; not under the
+  content firewall (same precedent as item 14's fixture edit — a
+  Playwright fixture, not `content/*.json`) and not referenced by literal
+  text anywhere else in the test suite (checked: only used by id, never
+  asserted by string). No dependency/content/progress-store-shape
+  touched; the content firewall wasn't in play. Item 19 (PHASE5 WS-C
+  particle cards) is next per queue order.
 
 ## Solutions & fixes log
 
