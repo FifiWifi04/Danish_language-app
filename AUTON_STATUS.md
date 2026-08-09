@@ -33,7 +33,7 @@ file from anywhere — iterations re-read it on every firing.
 | 12 | Progress export/import (JSON file) + stale-backup nudge | PHASE3 WS-D | done@00548ed | — |
 | 13 | Pronunciation guide content file (~12 phenomena, mechanics, DRAFT) + add `soundTags` to the 10 sound-coverage pilot cards (deferred from item 8 — see its log entry) | PRON WS-A | done@e0d2987 | — |
 | 14 | Udtale tab UI (guide browser) + `soundTags` links from cards | PRON WS-B | done@edf4814 | — |
-| 15 | Audio build script + manifest + fake-provider tests (no real key use) | PHASE4 WS-A | todo | — |
+| 15 | Audio build script + manifest + fake-provider tests (no real key use) | PHASE4 WS-A | done@95ff9d4 | — |
 | 16 | Audio playback wiring in Mode A (manifest-driven, silent degrade) | PHASE4 WS-B | todo | — |
 | 17 | Self-record & compare in the Udtale tab (MediaRecorder, no scoring) | PRON WS-D | todo | — |
 | 18 | Mode B active spelling: æ/ø/å button row, `ae/oe/aa` equivalence, promotion at reps ≥ 2 | PHASE5 WS-A | todo | — |
@@ -474,6 +474,50 @@ file from anywhere — iterations re-read it on every firing.
   chip-navigation smoke has something to click. No scheduler/dependency
   touched; `content/` itself untouched (firewall respected — the guide
   file was only read, never edited).
+
+- 2026-08-09 — item 15 (PHASE4 WS-A audio build script + manifest +
+  fake-provider tests) done@95ff9d4, tier-1 verified (npm test: 66/66
+  across 13 files incl. the 4 named `audio:` tests; tsc --noEmit; vite
+  build; npm run validate 7/7 all green). Content-only-adjacent
+  workstream (a build script, no UI/PWA touched), so tier 2/3 don't
+  apply. `scripts/audio-lib.mjs` (pure): `hashUtterance` (sha256 of
+  `text|voice|provider`, sliced to 16 hex chars), `collectUtterances`
+  (vocab `danish`; particle `pairs[].withoutIt`/`withIt`; pronunciation
+  `practiceWords[].word`, `minimalPairs[].a`/`b`, `exampleSentence.danish`
+  — deduped, first-seen order), `planSynthesis` (a manifest hit requires
+  matching voice+provider AND the file still present in a caller-supplied
+  `existingFiles` set, so a stale/missing file always re-synthesizes),
+  and `runSynthesis` (async, continues past a per-utterance failure,
+  `now` injectable for deterministic tests — a failed utterance never
+  gets a manifest entry, satisfying the plan's "failure keeps manifest
+  consistent"). `scripts/providers/fake.mjs` returns a 1-byte buffer,
+  used by all four tests and safe for CI. `scripts/providers/elevenlabs.mjs`
+  is the real D-AUD1 default (plain `fetch` against ElevenLabs'
+  text-to-speech endpoint, no new dependency) — never invoked by tests or
+  this routine, only by the owner's local G2 run.
+  `scripts/build-audio.mjs` is the CLI orchestrator: hand-parses `.env`
+  (no dotenv dependency — a few lines of `KEY=value` line matching) for
+  `TTS_PROVIDER`/`TTS_API_KEY`/`TTS_VOICE`, reads `content/*.json`, lists
+  `public/audio/` for existing files, plans + runs synthesis, and writes
+  `public/audio/<hash>.mp3` + `scripts/audio-manifest.json` after every
+  success (so a mid-run crash keeps whatever already succeeded); exits
+  non-zero listing every failed utterance. Added
+  `"build-audio": "node scripts/build-audio.mjs"` to `package.json` per
+  the plan. Manually dry-ran the full script end-to-end against a scratch
+  copy of the repo (never touching the real `public/audio/` or
+  `scripts/audio-manifest.json`) with `TTS_PROVIDER=fake`: first run
+  collected all 82 real utterances from the current `content/*.json` and
+  "synthesized" all 82; a second run against the same scratch copy
+  skipped all 82 via the manifest-hit path — confirms the skip logic
+  against real content shape, not just the unit-test fixtures. No real
+  key was used anywhere in this session; `.env` was already gitignored
+  from item 0's scaffold (`.env`/`.env.*` with `!.env.example`), so no
+  `.gitignore` change was needed. No UI/PWA/scheduler/content/dependency
+  touched — `content/` itself was only read, never edited (firewall
+  respected). Item 16 (PHASE4 WS-B playback wiring) is next but needs a
+  real manifest to wire against meaningfully; it's still buildable
+  against a fixture manifest per its own plan text, so left `todo` for
+  the next firing per the one-workstream bound.
 
 ## Solutions & fixes log
 
