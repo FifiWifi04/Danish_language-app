@@ -1,5 +1,5 @@
 import type { ProgressStore } from '../core/store';
-import type { SessionLogEntry } from '../core/types';
+import type { Rating, SessionLogEntry } from '../core/types';
 import type { VocabItem } from '../data/content';
 import { buildSession } from '../core/session';
 import { schedule } from '../core/scheduler';
@@ -7,7 +7,9 @@ import { materializeProgress } from '../core/progress';
 import { computeStreak } from '../core/stats';
 import { dayNumber, minuteNumber } from '../core/time';
 import { mulberry32 } from '../core/rng';
+import { isModeBEligible } from '../core/spelling';
 import { renderCard } from './review-card';
+import { renderSpellCard } from './review-spell';
 import { backupAgeDays, BACKUP_NUDGE_DAYS } from './backup-status';
 import { audioAutoplayEnabled, setAudioAutoplayEnabled } from './audio';
 
@@ -72,7 +74,7 @@ async function start(wrapper: HTMLElement, store: ProgressStore, deck: VocabItem
       showCard();
       return;
     }
-    renderCard(wrapper, item, progress, (rating) => {
+    const onRate = (rating: Rating): void => {
       const updated = schedule({ progress, rating, nowMinute: currentTime().nowMinute, today });
       if (rating === 'good') updated.contentHash = item.contentHash;
       progressById.set(id, updated);
@@ -81,7 +83,13 @@ async function start(wrapper: HTMLElement, store: ProgressStore, deck: VocabItem
         index++;
         showCard();
       });
-    });
+    };
+
+    if (isModeBEligible(progress)) {
+      renderSpellCard(wrapper, item, progress, onRate);
+    } else {
+      renderCard(wrapper, item, progress, onRate);
+    }
   }
 
   async function finish(): Promise<void> {

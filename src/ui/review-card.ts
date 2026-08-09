@@ -9,6 +9,29 @@ const RATINGS: [string, Rating][] = [
   ['Good', 'good'],
 ];
 
+/** Draft / content-changed badges for a card, shared by the reveal and spelling flows. */
+export function renderCardBadges(item: VocabItem, progress: Progress): HTMLElement {
+  const badges = document.createElement('div');
+  if (item.status === 'draft') badges.appendChild(makeBadge('DRAFT — unverified'));
+  if (progress.contentHash && progress.contentHash !== item.contentHash) {
+    badges.appendChild(makeBadge('content changed — re-check'));
+  }
+  return badges;
+}
+
+/** Again/Hard/Good rating row, shared by the reveal and spelling flows. */
+export function renderRatingButtons(onRate: (rating: Rating) => void): HTMLElement {
+  const buttons = document.createElement('div');
+  for (const [label, rating] of RATINGS) {
+    const button = document.createElement('button');
+    button.textContent = label;
+    button.style.minHeight = '48px';
+    button.addEventListener('click', () => onRate(rating));
+    buttons.appendChild(button);
+  }
+  return buttons;
+}
+
 /** Renders one card into `wrapper`: front, tap/space-to-reveal back, rating row. */
 export function renderCard(
   wrapper: HTMLElement,
@@ -17,13 +40,7 @@ export function renderCard(
   onRate: (rating: Rating) => void,
 ): void {
   wrapper.textContent = '';
-
-  const badges = document.createElement('div');
-  if (item.status === 'draft') badges.appendChild(makeBadge('DRAFT — unverified'));
-  if (progress.contentHash && progress.contentHash !== item.contentHash) {
-    badges.appendChild(makeBadge('content changed — re-check'));
-  }
-  wrapper.appendChild(badges);
+  wrapper.appendChild(renderCardBadges(item, progress));
 
   const card = document.createElement('div');
   card.tabIndex = 0;
@@ -46,7 +63,7 @@ export function renderCard(
 
   const back = document.createElement('div');
   back.hidden = true;
-  const buttons = document.createElement('div');
+  const buttons = renderRatingButtons(onRate);
   buttons.hidden = true;
 
   let revealed = false;
@@ -68,18 +85,11 @@ export function renderCard(
 
   wrapper.appendChild(card);
   wrapper.appendChild(back);
-
-  for (const [label, rating] of RATINGS) {
-    const button = document.createElement('button');
-    button.textContent = label;
-    button.style.minHeight = '48px';
-    button.addEventListener('click', () => onRate(rating));
-    buttons.appendChild(button);
-  }
   wrapper.appendChild(buttons);
 }
 
-function renderBack(back: HTMLElement, item: VocabItem): void {
+/** Renders a card's back content (translations, note, audio, sound tags) — reused by the Mode B spelling flow's reveal/escape-hatch. */
+export function renderBack(back: HTMLElement, item: VocabItem): void {
   back.textContent = '';
   for (const text of [item.english, item.polish, item.phoneticPl]) {
     const p = document.createElement('p');

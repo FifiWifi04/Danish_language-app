@@ -18,10 +18,10 @@
       "id": "fixture.two",
       "status": "draft",
       "priority": 2,
-      "danish": "to",
+      "danish": "tø",
       "english": "two",
       "polish": "dwa",
-      "phoneticPl": "to",
+      "phoneticPl": "tø",
       "emojiAnchor": "2️⃣",
       "contentHash": "fixture-two"
     },
