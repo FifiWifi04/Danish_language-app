@@ -94,6 +94,21 @@ function renderBack(back: HTMLElement, item: VocabItem): void {
   audioButton.textContent = '🔊 Play';
   audioButton.disabled = true;
   back.appendChild(audioButton);
+
+  if (item.soundTags && item.soundTags.length > 0) {
+    const chips = document.createElement('div');
+    chips.className = 'sound-tag-chips';
+    for (const tag of item.soundTags) {
+      const chip = document.createElement('button');
+      chip.className = 'sound-tag-chip';
+      chip.textContent = tag;
+      chip.addEventListener('click', () => {
+        window.location.hash = `udtale/${tag}`;
+      });
+      chips.appendChild(chip);
+    }
+    back.appendChild(chips);
+  }
 }
 
 function makeBadge(text: string): HTMLElement {

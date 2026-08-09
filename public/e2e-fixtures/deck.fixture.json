@@ -11,7 +11,8 @@
       "polish": "jeden",
       "phoneticPl": "et",
       "emojiAnchor": "1️⃣",
-      "contentHash": "fixture-one"
+      "contentHash": "fixture-one",
+      "soundTags": ["stoed"]
     },
     {
       "id": "fixture.two",
