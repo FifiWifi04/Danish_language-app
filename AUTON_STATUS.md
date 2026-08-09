@@ -41,7 +41,7 @@ file from anywhere — iterations re-read it on every firing.
 | 20 | Leech rework list + in-review "flag card" + undo last rating | PHASE5 WS-D | done@2b33a65 | — |
 | 21 | Minimal-pair perception drill (real clips only — TTS fallback forbidden here) | PRON WS-C | blocked | G2 |
 | 22 | Mode C dictation | PHASE5 WS-B | blocked | G2 |
-| 23 | Docs sweep: HANDOFF re-sync to what exists, DECISIONS completeness, test-list sync | — | todo (take last) | — |
+| 23 | Docs sweep: HANDOFF re-sync to what exists, DECISIONS completeness, test-list sync | — | done@416878b | — |
 | — | Scale deck to 500 in ~50-card themed batches | PHASE2 WS-C | blocked | G1 + G3 |
 | — | Flip pilot content `draft`→`reviewed` per reviewer verdicts | PHASE2 WS-D | blocked | G1 (owner supplies verdicts) |
 | — | Dialogues, sagittal diagrams, speech scoring, cross-device sync, Forvo, grammar module | — | parked | see `PARKED_GATES.md` |
@@ -803,6 +803,48 @@ file from anywhere — iterations re-read it on every firing.
   change to what those 4 tests assert. Item 21 (PRON WS-C minimal-pair
   drill) and item 22 (PHASE5 WS-B dictation) remain `blocked` on G2; item
   23 (docs sweep) is next per queue order ("take last").
+
+- 2026-08-09 — item 23 (docs sweep) done@416878b, tier-1 verified (npm
+  test: 88/88 across 19 files; tsc --noEmit; vite build; npm run validate
+  7/7 all green). Docs-only workstream (no `src/`/`scripts/`/`content/`
+  code touched), so tier 2/3 don't apply. Findings and fixes: `HANDOFF.md`
+  §4.2's repo-shape tree and §4.6 Phase 4 prose still named
+  `scripts/validate-deck.ts`, `scripts/build-audio.ts`, and
+  `scripts/audio-manifest.json` — all three superseded by earlier resolved
+  decisions (the `.mjs`-only `scripts/` rule from item 7's
+  DECISIONS-NEEDED resolution; item 16's move of the manifest under
+  `public/` so `playFor` can `fetch` it at runtime, which Vite doesn't
+  serve out of `scripts/`). Corrected both to the real paths and gave the
+  `src/ui/` line an accurate (if still non-exhaustive) file list.
+  `CLAUDE.md` rule 4's dev-dependency list already correctly named
+  `happy-dom` (added at the same time as the rest of item 0's scaffold,
+  nothing to fix there), but rule 7 still said `scripts/build-audio.ts` —
+  fixed to `.mjs` to match rule 4b's own decision, which it was
+  contradicting. `PLAN_PHASE4_AUDIO.md` WS-A's own text still pointed at
+  the pre-item-16 `scripts/audio-manifest.json` path (the plan was never
+  amended when WS-B forced the move) — corrected, with a new
+  `docs/DECISIONS.md` entry recording the manifest-path decision, which
+  previously existed only in this log (item 16's entry) and not in the
+  decisions record itself. DECISIONS.md was otherwise checked for
+  completeness against every scheduler/product judgement made across
+  items 0–20's log entries (relearning+hard row 12b, rework unsuspend
+  semantics, day-number due dates, ease/interval bounds, leech-at-8,
+  priority-ordered new cards, content firewall, TTS-only audio,
+  emoji-first visuals) — all already present, no other gaps found.
+  Test-list sync: extracted every named test description
+  (`category: ...`) from `tests/*.test.ts` and cross-checked against every
+  PLAN file's "Tests:"/named-test acceptance criteria and every prior
+  iteration-log entry's test-count claims (item 3's 13 `sched:` tests,
+  item 15's 4 `audio:` tests, item 20's `rework:`/`undo:` tests, etc.) —
+  all present and accounted for, no missing or orphaned test names found;
+  this was pure verification, no doc changes resulted from it beyond what
+  the path-staleness fixes above already covered. No dependency added, no
+  scheduler/content touched — the content firewall wasn't in play (no
+  `content/*.json` edited). Queue is now drained: items 21/22 remain
+  `blocked` on G2 (audio generation, still open); nothing else is
+  `todo`-and-unblocked. The next firing should find the queue drained and
+  append a single drained line per AUTON_ORDERS step 4, unless the owner
+  has cleared a gate (G1/G2/G3) by then.
 
 ## Solutions & fixes log
 
