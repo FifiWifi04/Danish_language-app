@@ -14,7 +14,12 @@ export default defineConfig({
   testDir: 'tests/e2e',
   use: {
     baseURL: BASE,
-    launchOptions: executablePath ? { executablePath } : {},
+    launchOptions: {
+      ...(executablePath ? { executablePath } : {}),
+      // PRON WS-D's self-record smoke needs a mic without a real device or a
+      // permission-prompt click; harmless to specs that don't touch media.
+      args: ['--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream'],
+    },
   },
   webServer: {
     command: `npm run preview -- --port ${String(PORT)} --strictPort`,

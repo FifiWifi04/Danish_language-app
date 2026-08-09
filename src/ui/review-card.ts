@@ -1,6 +1,7 @@
 import type { Progress, Rating } from '../core/types';
 import type { VocabItem } from '../data/content';
 import { audioAutoplayEnabled, clipFor, playFor } from './audio';
+import { renderRecordControl } from './record';
 
 const RATINGS: [string, Rating][] = [
   ['Again', 'again'],
@@ -102,6 +103,7 @@ function renderBack(back: HTMLElement, item: VocabItem): void {
     if (!entry) return;
     audioButton.hidden = false;
     if (audioAutoplayEnabled()) void playFor(item.danish);
+    renderRecordControl(back, item.danish); // "card backs with audio" per PRON WS-D
   });
 
   if (item.soundTags && item.soundTags.length > 0) {

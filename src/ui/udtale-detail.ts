@@ -1,5 +1,6 @@
 import type { PronunciationItem } from '../data/pronunciation';
 import { playFor } from './audio';
+import { renderRecordControl } from './record';
 
 /** Renders one pronunciation item's detail view into `wrapper`. */
 export function renderUdtaleDetail(wrapper: HTMLElement, item: PronunciationItem, onBack: () => void): void {
@@ -36,6 +37,12 @@ export function renderUdtaleDetail(wrapper: HTMLElement, item: PronunciationItem
   if (item.minimalPairs && item.minimalPairs.length > 0) {
     wrapper.appendChild(renderMinimalPairs(item.minimalPairs));
   }
+
+  // PRON WS-D: self-record & compare, referenced against the item's first
+  // practice word — degrades silently on playback if no clip exists yet,
+  // same as the practice-word chips above (PHASE4 WS-B's pattern).
+  const referenceWord = item.practiceWords[0];
+  if (referenceWord) renderRecordControl(wrapper, referenceWord.word);
 
   // PRON WS-C (the perception drill) is blocked on G2 (real audio clips) —
   // the button exists per the plan's "hidden until then" but does nothing yet.
