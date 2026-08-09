@@ -37,7 +37,7 @@ file from anywhere — iterations re-read it on every firing.
 | 16 | Audio playback wiring in Mode A (manifest-driven, silent degrade) | PHASE4 WS-B | done@678a275 | — |
 | 17 | Self-record & compare in the Udtale tab (MediaRecorder, no scoring) | PRON WS-D | done@87e8d4a | — |
 | 18 | Mode B active spelling: æ/ø/å button row, `ae/oe/aa` equivalence, promotion at reps ≥ 2 | PHASE5 WS-A | done@5033fd0 | — |
-| 19 | Particle cards: contrastive-pair card type, pilot content DRAFT | PHASE5 WS-C | todo | — |
+| 19 | Particle cards: contrastive-pair card type, pilot content DRAFT | PHASE5 WS-C | done@0d0f8a0 | — |
 | 20 | Leech rework list + in-review "flag card" + undo last rating | PHASE5 WS-D | todo | — |
 | 21 | Minimal-pair perception drill (real clips only — TTS fallback forbidden here) | PRON WS-C | blocked | G2 |
 | 22 | Mode C dictation | PHASE5 WS-B | blocked | G2 |
@@ -673,6 +673,69 @@ file from anywhere — iterations re-read it on every firing.
   asserted by string). No dependency/content/progress-store-shape
   touched; the content firewall wasn't in play. Item 19 (PHASE5 WS-C
   particle cards) is next per queue order.
+
+- 2026-08-09 — item 19 (PHASE5 WS-C particle cards) done@0d0f8a0, tier-1
+  verified (npm test: 84/84 across 17 files incl. 4 new named `particles:`
+  tests; tsc --noEmit; vite build; npm run validate 7/7 all green — the
+  real validator now also exercises `content/particles.v1.json`) AND
+  tier-2 verified (Playwright 12/12, incl. new `tests/e2e/particles.spec.ts`
+  — walks the fixture queue, asserts a `.particle-card` renders "da" and
+  its first pair's `withoutIt` sentence on the front, reveals it and
+  asserts both pairs' `withIt`/`socialEffect_pl` text appear, then rates
+  it Good and finishes the session normally; existing 11 specs still
+  green). `content/particles.v1.json` seeds the 6 pilot items named in
+  the plan (da, jo, lige, vel, nok, godt), each `"status":"draft"` with
+  exactly 2 contrastive pairs (`withoutIt`/`withIt`/`socialEffect_pl`) and
+  a `note_pl`, matching HANDOFF §3.6's "Kom nu"/"Kom nu da" pattern; the
+  existing `validateParticleItem` schema (built ahead of time in item 7)
+  needed no change. **Reading decision, small and in-scope (not a STOP
+  case):** the particle schema doesn't require or check `contentHash` (only
+  `validateVocabItem` does), but `materializeProgress`/`Progress` assume
+  every card has one for the "content changed" re-check flag — rather than
+  special-case particles out of that mechanism, gave each item a
+  `contentHash` computed the same way as vocab's
+  `sha256(danish + "|" + (clozeTarget ?? ""))` formula but with
+  `particle` standing in for `danish` and the pairs' `withoutIt>withIt`
+  text (joined) standing in for `clozeTarget`; documented here since it's
+  not enforced anywhere and a future content edit must recompute it by
+  hand (or a small script) using that same formula.
+  `src/data/deck.ts` (new) introduces `DeckItem = VocabItem | ParticleItem`
+  and `isParticleItem` (structural — `'particle' in item` — no tag field
+  added to either content shape) plus `loadDeck()`, which the review/stats/
+  shell layer now takes instead of `VocabItem[]` (only a type-import swap
+  in `shell.ts`/`stats.ts`; `materializeProgress` already only needed
+  `{id, contentHash}` structurally, so no core change). `src/data/
+  particles.ts` loads `content/particles.v1.json` the same way `data/
+  content.ts` loads the vocab deck; under `?e2eDeck=1` it returns `[]`
+  unless a *second*, separate flag `?e2eParticles=1` is also present, so
+  every pre-existing e2e spec's fixed 3-card fixture deck (`review.spec.ts`
+  asserts exactly 3 progress rows, byte-checked by id) is completely
+  unaffected — the new smoke test opts in with both params and gets a
+  4-item queue (3 vocab + 1 particle, `public/e2e-fixtures/
+  particles.fixture.json`). `src/ui/review-particle.ts` (new, 87 lines)
+  renders the card per the plan's text exactly: front = particle + pairs[0]
+  .withoutIt; reveal = every pair's withoutIt/withIt/socialEffect_pl plus
+  note_pl; reuses `renderCardBadges`/`renderRatingButtons` from
+  `review-card.ts` rather than duplicating them (`renderCardBadges`'s
+  parameter type was widened from `VocabItem` to a minimal
+  `{status, contentHash}` shape so both card kinds satisfy it structurally
+  — `renderCard`'s own call site and behaviour are unchanged). `review.ts`'s
+  `showCard()` now checks `isParticleItem(item)` first and routes straight
+  to `renderParticleCard`, bypassing `isModeBEligible` entirely — Mode B
+  active spelling only ever applies to vocab, matching the plan's silence
+  on spelling for particles; `schedule()`/the transition table are
+  completely untouched (particles rate through the exact same `onRate`
+  closure as vocab, per "the scheduler does not know card types"), so no
+  `docs/DECISIONS.md` entry was needed. No audio wiring was added for
+  particle pairs — WS-C's text doesn't mention audio for this card type
+  (unlike WS-A/pronunciation, which named `playFor` explicitly), so this
+  was read as out of scope rather than a silent gap; `scripts/audio-lib.mjs`
+  already collects particle pairs' utterances (from item 15), so PHASE4/
+  a future audio workstream can wire playback into `review-particle.ts` if
+  wanted, same silent-degrade pattern as everywhere else. No dependency
+  added; content firewall respected (no `"status":"reviewed"` file
+  touched — `content/particles.v1.json` is new and all-draft). Item 20
+  (PHASE5 WS-D leech rework/flag/undo) is next per queue order.
 
 ## Solutions & fixes log
 
