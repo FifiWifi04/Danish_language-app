@@ -32,7 +32,7 @@ file from anywhere — iterations re-read it on every firing.
 | 11 | Stats view + append-only session log + streak/due counts | PHASE3 WS-C | done@f11292c | — |
 | 12 | Progress export/import (JSON file) + stale-backup nudge | PHASE3 WS-D | done@00548ed | — |
 | 13 | Pronunciation guide content file (~12 phenomena, mechanics, DRAFT) + add `soundTags` to the 10 sound-coverage pilot cards (deferred from item 8 — see its log entry) | PRON WS-A | done@e0d2987 | — |
-| 14 | Udtale tab UI (guide browser) + `soundTags` links from cards | PRON WS-B | todo | — |
+| 14 | Udtale tab UI (guide browser) + `soundTags` links from cards | PRON WS-B | done@edf4814 | — |
 | 15 | Audio build script + manifest + fake-provider tests (no real key use) | PHASE4 WS-A | todo | — |
 | 16 | Audio playback wiring in Mode A (manifest-driven, silent degrade) | PHASE4 WS-B | todo | — |
 | 17 | Self-record & compare in the Udtale tab (MediaRecorder, no scoring) | PRON WS-D | todo | — |
@@ -435,6 +435,45 @@ file from anywhere — iterations re-read it on every firing.
   (`scripts/content-item-schemas.mjs`'s `validatePronunciationItem`) was
   already built ahead of time in item 7, so no validator change was
   needed here, only content authored against the existing schema.
+- 2026-08-09 — item 14 (PRON WS-B Udtale tab UI) done@edf4814, tier-1
+  verified (npm test: 62/62 across 12 files incl. 3 new named `udtale:`
+  tests; tsc --noEmit; vite build; npm run validate 7/7 all green) AND
+  tier-2 verified (Playwright 6/6, incl. new `tests/e2e/udtale.spec.ts` —
+  opens "stød" from the list and asserts mechanics steps render; taps a
+  soundTag chip on a fixture card back and asserts hash-navigation into
+  the matching detail view; existing review/pwa-offline/stats/backup
+  specs still green). `src/data/pronunciation.ts` loads
+  `content/pronunciation.v1.json` the same way `data/content.ts` loads
+  the deck (bundled JSON import, typed per WS-A's schema). `src/ui/
+  udtale.ts` (list view: 12 items, title_da/title_pl, DRAFT badge) and
+  `src/ui/udtale-detail.ts` (detail view: whatItIs → anchor → numbered
+  mechanics steps → polishTrap in a warning box → practice-word chips →
+  minimal-pairs table → "drill this sound" button) split to stay under
+  CLAUDE.md's ~200-line guideline, mirroring the existing review.ts/
+  review-card.ts split. `src/ui/shell.ts`'s hash router gained an
+  optional sub-route (`#udtale/<id>` → opens straight to that item,
+  parsed by a new `detailFromHash`) so soundTag chips can deep-link
+  without a bigger routing rework; `tabFromHash` now takes only the
+  segment before the first `/`, so plain `#udtale`/`#review`/`#stats`
+  behave exactly as before. `src/ui/review-card.ts`'s card back renders
+  a small chip per `item.soundTags` entry (tag text as-is, no title
+  lookup — kept minimal) that sets `location.hash` to jump into Udtale.
+  **Deliberate, documented deviation (self-healing mandate, small and
+  in-scope):** the plan's WS-B text says practice-word chips "play audio
+  when the manifest has it, PHASE4 WS-B's `playFor`" — that function and
+  the whole audio manifest (items 15/16) are still `todo`, so chips are
+  rendered `disabled`, exactly matching the silent-degrade pattern
+  `review-card.ts` already uses for its own audio button; PHASE4 WS-B
+  should wire `playFor` into these chips (and remove `disabled`) when it
+  lands, no other change needed here. The "drill this sound" button is
+  rendered `hidden` per the plan's own words ("hidden until then"), since
+  WS-C is `blocked` on G2 — nothing to wait on, just following the text.
+  Added `"soundTags": ["stoed"]` to the e2e fixture deck's first card
+  (`public/e2e-fixtures/deck.fixture.json`, not under the content
+  firewall — it's a Playwright fixture, not `content/*.json`) so the
+  chip-navigation smoke has something to click. No scheduler/dependency
+  touched; `content/` itself untouched (firewall respected — the guide
+  file was only read, never edited).
 
 ## Solutions & fixes log
 
