@@ -9,6 +9,8 @@ import { computeStreak } from '../core/stats';
 import { dayNumber, minuteNumber } from '../core/time';
 import { mulberry32 } from '../core/rng';
 import { isModeBEligible } from '../core/spelling';
+import { captureSnapshot, applyUndo } from '../core/undo';
+import type { RatingSnapshot } from '../core/undo';
 import { renderCard } from './review-card';
 import { renderSpellCard } from './review-spell';
 import { renderParticleCard } from './review-particle';
@@ -37,6 +39,13 @@ export function renderReview(container: HTMLElement, store: ProgressStore, deck:
   void start(wrapper, store, deck);
 }
 
+function renderUndoButton(onClick: () => void): HTMLElement {
+  const button = document.createElement('button');
+  button.textContent = '↺ Undo last rating';
+  button.addEventListener('click', onClick);
+  return button;
+}
+
 function renderAudioToggle(): HTMLElement {
   const label = document.createElement('label');
   label.className = 'audio-autoplay-toggle';
@@ -62,6 +71,8 @@ async function start(wrapper: HTMLElement, store: ProgressStore, deck: DeckItem[
   const queue = session.queue;
   const counts = { again: 0, hard: 0, good: 0 };
   let index = 0;
+  let lastRated: RatingSnapshot | null = null;
+  let lastRatedIndex = -1;
 
   function showCard(): void {
     if (index >= queue.length) {
@@ -77,7 +88,10 @@ async function start(wrapper: HTMLElement, store: ProgressStore, deck: DeckItem[
       return;
     }
     const onRate = (rating: Rating): void => {
-      const updated = schedule({ progress, rating, nowMinute: currentTime().nowMinute, today });
+      const current = progressById.get(id) ?? progress;
+      lastRated = captureSnapshot(id, current, rating);
+      lastRatedIndex = index;
+      const updated = schedule({ progress: current, rating, nowMinute: currentTime().nowMinute, today });
       if (rating === 'good') updated.contentHash = item.contentHash;
       progressById.set(id, updated);
       counts[rating]++;
@@ -86,14 +100,35 @@ async function start(wrapper: HTMLElement, store: ProgressStore, deck: DeckItem[
         showCard();
       });
     };
+    const onFlag = (reason: string): void => {
+      const current = progressById.get(id) ?? progress;
+      const flagged = { ...current, flagged: reason };
+      progressById.set(id, flagged);
+      void store.put(flagged);
+    };
 
     if (isParticleItem(item)) {
-      renderParticleCard(wrapper, item, progress, onRate);
+      renderParticleCard(wrapper, item, progress, onRate, onFlag);
     } else if (isModeBEligible(progress)) {
-      renderSpellCard(wrapper, item, progress, onRate);
+      renderSpellCard(wrapper, item, progress, onRate, onFlag);
     } else {
-      renderCard(wrapper, item, progress, onRate);
+      renderCard(wrapper, item, progress, onRate, onFlag);
     }
+    if (lastRated) {
+      wrapper.appendChild(renderUndoButton(() => void undo()));
+    }
+  }
+
+  async function undo(): Promise<void> {
+    if (!lastRated) return;
+    const snapshot = lastRated;
+    lastRated = null;
+    const restored = applyUndo(snapshot);
+    progressById.set(snapshot.id, restored);
+    counts[snapshot.rating]--;
+    await store.put(restored);
+    index = lastRatedIndex;
+    showCard();
   }
 
   async function finish(): Promise<void> {

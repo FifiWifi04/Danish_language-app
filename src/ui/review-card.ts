@@ -2,6 +2,7 @@ import type { Progress, Rating } from '../core/types';
 import type { VocabItem } from '../data/content';
 import { audioAutoplayEnabled, clipFor, playFor } from './audio';
 import { renderRecordControl } from './record';
+import { renderFlagControl } from './flag';
 
 const RATINGS: [string, Rating][] = [
   ['Again', 'again'],
@@ -41,6 +42,7 @@ export function renderCard(
   item: VocabItem,
   progress: Progress,
   onRate: (rating: Rating) => void,
+  onFlag: (reason: string) => void,
 ): void {
   wrapper.textContent = '';
   wrapper.appendChild(renderCardBadges(item, progress));
@@ -73,7 +75,7 @@ export function renderCard(
   function reveal(): void {
     if (revealed) return;
     revealed = true;
-    renderBack(back, item);
+    renderBack(back, item, progress.flagged, onFlag);
     back.hidden = false;
     buttons.hidden = false;
   }
@@ -91,8 +93,13 @@ export function renderCard(
   wrapper.appendChild(buttons);
 }
 
-/** Renders a card's back content (translations, note, audio, sound tags) — reused by the Mode B spelling flow's reveal/escape-hatch. */
-export function renderBack(back: HTMLElement, item: VocabItem): void {
+/** Renders a card's back content (translations, note, audio, sound tags, flag control) — reused by the Mode B spelling flow's reveal/escape-hatch. */
+export function renderBack(
+  back: HTMLElement,
+  item: VocabItem,
+  flagged: string | null,
+  onFlag: (reason: string) => void,
+): void {
   back.textContent = '';
   for (const text of [item.english, item.polish, item.phoneticPl]) {
     const p = document.createElement('p');
@@ -133,6 +140,8 @@ export function renderBack(back: HTMLElement, item: VocabItem): void {
     }
     back.appendChild(chips);
   }
+
+  renderFlagControl(back, flagged, onFlag);
 }
 
 function makeBadge(text: string): HTMLElement {

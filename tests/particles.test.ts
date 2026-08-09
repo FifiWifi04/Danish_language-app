@@ -19,7 +19,7 @@ const ITEM: ParticleItem = {
 describe('particles', () => {
   it('particles: front shows the particle and the first pair\'s withoutIt sentence, nothing more revealed yet', () => {
     const wrapper = document.createElement('div');
-    renderParticleCard(wrapper, ITEM, newProgress(ITEM.id, ITEM.contentHash), () => {});
+    renderParticleCard(wrapper, ITEM, newProgress(ITEM.id, ITEM.contentHash), () => {}, () => {});
 
     expect(wrapper.querySelector('h2')?.textContent).toBe('da');
     expect(wrapper.textContent).toContain('Kom nu.');
@@ -28,7 +28,7 @@ describe('particles', () => {
 
   it('particles: renders both pair sides plus each socialEffect_pl and the note on reveal', () => {
     const wrapper = document.createElement('div');
-    renderParticleCard(wrapper, ITEM, newProgress(ITEM.id, ITEM.contentHash), () => {});
+    renderParticleCard(wrapper, ITEM, newProgress(ITEM.id, ITEM.contentHash), () => {}, () => {});
 
     wrapper.querySelector<HTMLElement>('.review-card')?.click();
 
@@ -46,7 +46,7 @@ describe('particles', () => {
   it('particles: rating calls onRate with the chosen rating', () => {
     const wrapper = document.createElement('div');
     const ratings: string[] = [];
-    renderParticleCard(wrapper, ITEM, newProgress(ITEM.id, ITEM.contentHash), (r) => ratings.push(r));
+    renderParticleCard(wrapper, ITEM, newProgress(ITEM.id, ITEM.contentHash), (r) => ratings.push(r), () => {});
 
     wrapper.querySelector<HTMLElement>('.review-card')?.click();
     const goodButton = [...wrapper.querySelectorAll('button')].find((b) => b.textContent === 'Good');
@@ -57,7 +57,7 @@ describe('particles', () => {
 
   it('particles: shows the DRAFT badge for draft-status items', () => {
     const wrapper = document.createElement('div');
-    renderParticleCard(wrapper, ITEM, newProgress(ITEM.id, ITEM.contentHash), () => {});
+    renderParticleCard(wrapper, ITEM, newProgress(ITEM.id, ITEM.contentHash), () => {}, () => {});
 
     expect(wrapper.querySelector('.badge')?.textContent).toContain('DRAFT');
   });

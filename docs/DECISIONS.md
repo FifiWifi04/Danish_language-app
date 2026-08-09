@@ -125,3 +125,21 @@ Why this and not the alternatives:
 
 Edge case, intended: when the pending interval is already 1 day, Hard and
 Good coincide. The interval floor of 1 wins over the halving.
+
+## 2026-08-09 — Rework-list "Unsuspend & retry" resets schedule, not history
+
+`PLAN_PHASE5_MODES.md` WS-D's rework list lets the owner pull a leech (8+
+lapses, `state:'suspended'`, `isLeech:true`) back into the active review
+queue. The plan's own text flags this as needing a decision: "lapses→0?
+NO — lapses keep history." Resolved: `unsuspendForRework` (`src/core/
+rework.ts`) touches only `isLeech` (→false), `state` (→`review`), `step`
+(→0), `intervalDays` (→1), `dueDay` (→today+1), `dueMinute` (→null).
+`lapses`, `reps`, and `ease` are left exactly as they were — the card
+comes back in tomorrow, at review-state day-1 scheduling, but with its
+full lapse count intact, so an 8th relapse would immediately re-leech it
+rather than resetting the counter to buy eight more free failures. This
+is not a `schedule()` change (the transition table is untouched); it is a
+separate, explicit user action outside the rating flow, so no table row
+was added — `schedule()` never sees a `suspended` card by construction
+(the session queue excludes leeches), and this function is the only path
+back out of suspension. Source: PLAN_PHASE5_MODES.md WS-D, REVIEW.md A.9.

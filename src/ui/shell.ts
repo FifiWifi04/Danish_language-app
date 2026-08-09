@@ -3,6 +3,7 @@ import type { DeckItem } from '../data/deck';
 import { renderReview } from './review';
 import { renderStats } from './stats';
 import { renderUdtale } from './udtale';
+import { renderReworkList } from './rework';
 
 export type TabId = 'review' | 'udtale' | 'stats';
 
@@ -53,7 +54,11 @@ function renderMain(main: HTMLElement, tab: TabId, detail: string | undefined, d
   if (tab === 'review') {
     renderReview(main, deps.store, deps.deck);
   } else if (tab === 'stats') {
-    renderStats(main, deps.store, deps.deck);
+    if (detail === 'rework') {
+      renderReworkList(main, deps.store, deps.deck);
+    } else {
+      renderStats(main, deps.store, deps.deck);
+    }
   } else if (tab === 'udtale') {
     renderUdtale(main, detail);
   }

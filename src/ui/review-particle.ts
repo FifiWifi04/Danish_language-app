@@ -1,6 +1,7 @@
 import type { Progress, Rating } from '../core/types';
 import type { ParticleItem } from '../data/particles';
 import { renderCardBadges, renderRatingButtons } from './review-card';
+import { renderFlagControl } from './flag';
 
 /**
  * Renders a particle card into `wrapper`: front shows the particle plus its
@@ -14,6 +15,7 @@ export function renderParticleCard(
   item: ParticleItem,
   progress: Progress,
   onRate: (rating: Rating) => void,
+  onFlag: (reason: string) => void,
 ): void {
   wrapper.textContent = '';
   wrapper.appendChild(renderCardBadges(item, progress));
@@ -41,6 +43,7 @@ export function renderParticleCard(
     if (revealed) return;
     revealed = true;
     renderPairs(back, item);
+    renderFlagControl(back, progress.flagged, onFlag);
     back.hidden = false;
     buttons.hidden = false;
   }

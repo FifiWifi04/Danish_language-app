@@ -17,6 +17,7 @@ export function renderSpellCard(
   item: VocabItem,
   progress: Progress,
   onRate: (rating: Rating) => void,
+  onFlag: (reason: string) => void,
 ): void {
   wrapper.textContent = '';
   wrapper.appendChild(renderCardBadges(item, progress));
@@ -75,7 +76,7 @@ export function renderSpellCard(
   function revealNormally(): void {
     input.disabled = true;
     checkButton.disabled = true;
-    renderBack(back, item);
+    renderBack(back, item, progress.flagged, onFlag);
     back.hidden = false;
     ratingRow.hidden = false;
   }

@@ -5,6 +5,7 @@ import {
   computeRetention,
   last30DaysBars,
   countLeeches,
+  flaggedEntries,
 } from '../src/core/stats';
 import type { Progress, SessionLogEntry } from '../src/core/types';
 
@@ -117,5 +118,17 @@ describe('stats', () => {
       makeProgress('c', { isLeech: true }),
     ];
     expect(countLeeches(all)).toBe(2);
+  });
+
+  it('stats: flaggedEntries lists only flagged cards as id/reason pairs', () => {
+    const all = [
+      makeProgress('a', { flagged: 'content' }),
+      makeProgress('b', { flagged: null }),
+      makeProgress('c', { flagged: 'audio' }),
+    ];
+    expect(flaggedEntries(all)).toEqual([
+      { id: 'a', flagged: 'content' },
+      { id: 'c', flagged: 'audio' },
+    ]);
   });
 });

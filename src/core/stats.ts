@@ -88,3 +88,8 @@ export function last30DaysBars(
 export function countLeeches(all: Progress[]): number {
   return all.filter((p) => p.isLeech).length;
 }
+
+/** Flagged cards (REVIEW.md A.9) as `{id, flagged}` pairs, for the Stats copyable block. */
+export function flaggedEntries(all: Progress[]): { id: string; flagged: string }[] {
+  return all.filter((p) => p.flagged !== null).map((p) => ({ id: p.id, flagged: p.flagged as string }));
+}
