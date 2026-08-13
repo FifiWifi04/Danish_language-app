@@ -848,6 +848,32 @@ file from anywhere — iterations re-read it on every firing.
 
 ## Solutions & fixes log
 
+- **2026-08-11 — the live site was a white screen for four days while every
+  deploy reported success (owner-reported; config, not code).** *What broke:*
+  `https://fifiwifi04.github.io/Danish_language-app/` rendered blank, console
+  showing `main.ts:1 Failed to load resource: 404`, in a clean incognito
+  window. *Diagnosis:* the deployed artifact was verified correct (32,895
+  bytes vs a local build's 32,715; `dist/index.html` references
+  `assets/index-*.js`; the build output contains ZERO references to
+  `main.ts` and emits no sourcemaps). The repo's SOURCE `index.html`
+  contains `<script type="module" src="/src/main.ts">` — an ABSOLUTE path,
+  which under the `/Danish_language-app/` base resolves to
+  `fifiwifi04.github.io/src/main.ts` and 404s. So the live site was serving
+  the repository source tree, not the artifact. Confirmed by the owner:
+  `…/CLAUDE.md` was fetchable (a repo file that is not in `dist/`), and
+  Settings → Pages showed a legacy branch build, "last deployed 4 days ago",
+  which never advanced despite 45 successful Actions deployments.
+  *Root cause:* Settings → Pages → Source was a branch build rather than
+  "GitHub Actions". Owner switched it to GitHub Actions. *Solution:*
+  `deploy.yml` gains (a) `workflow_dispatch`, since there was previously NO
+  way to force a redeploy without inventing a commit, and (b) a **live-page
+  verification step** that curls the deployed URL and fails the run unless
+  the served HTML references the built bundle and does not reference
+  `/src/main.ts`. *Reviewer should double-check:* that the verification step
+  actually fails when pointed at a source-serving site — it is the only
+  thing standing between "pipeline green" and "app works", and this incident
+  is the proof that those are different claims.
+
 - **2026-08-07 — first firing could not see the build branch (environmental,
   not a repo defect).** *What broke:* the firing reported `git fetch origin
   claude/danish-app-design-review-z48b7e` → "couldn't find remote ref", and

@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - claude/danish-app-design-review-z48b7e
+  # Manual trigger, so the owner can redeploy from the Actions tab without
+  # inventing a commit (added 2026-08-11 — Pages had been serving the repo
+  # SOURCE tree via a legacy branch build, and there was no way to force a
+  # fresh Actions deployment after fixing the setting).
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -33,3 +38,32 @@ jobs:
 
       - id: deployment
         uses: actions/deploy-pages@v4
+
+      # A green deploy is NOT proof the page renders. Pages served the raw
+      # source tree for four days while every deploy step reported success,
+      # because the site's Source was a legacy branch build rather than the
+      # Actions artifact. This step closes that gap: it fetches the live URL
+      # and asserts the served HTML is the BUILT page.
+      - name: Verify the live page is the built bundle
+        run: |
+          url="${{ steps.deployment.outputs.page_url }}"
+          echo "Verifying $url"
+          for attempt in 1 2 3 4 5 6; do
+            body="$(curl -fsSL --max-time 30 "$url" || true)"
+            if printf '%s' "$body" | grep -q 'assets/index-.*\.js'; then
+              echo "OK — live page references the built bundle."
+              if printf '%s' "$body" | grep -q '/src/main\.ts'; then
+                echo "::error::Live page also references /src/main.ts — source tree is being served."
+                exit 1
+              fi
+              exit 0
+            fi
+            echo "attempt $attempt: not the built page yet, retrying in 10s"
+            sleep 10
+          done
+          echo "::error::Live page never served the built bundle. Served HTML below."
+          printf '%s' "$body" | head -40
+          echo ""
+          echo "Most likely cause: Settings > Pages > Source is not 'GitHub Actions',"
+          echo "so Pages is serving the repository source instead of this artifact."
+          exit 1

@@ -65,10 +65,20 @@ file, and no routine firing ever creates one.
       echo "::error::.env is tracked — remove it and rotate the key"; exit 1
     fi
 ```
-2. `.github/workflows/deploy.yml`: on push to the build branch — build,
-   `actions/upload-pages-artifact` on `dist/`, `actions/deploy-pages`
-   (permissions `pages: write`, `id-token: write`, environment
-   `github-pages`).
+2. `.github/workflows/deploy.yml`: on push to the build branch **plus
+   `workflow_dispatch`** (so the owner can force a redeploy from the
+   Actions tab), — build, `actions/upload-pages-artifact` on `dist/`,
+   `actions/deploy-pages` (permissions `pages: write`, `id-token: write`,
+   environment `github-pages`), **then a live-page verification step**
+   that curls `steps.deployment.outputs.page_url` and fails the run
+   unless the served HTML references `assets/index-*.js` and does NOT
+   reference `/src/main.ts`.
+
+   That last step is not optional ceremony — it is the regression test
+   for a real four-day outage (2026-08-07→11): Pages served the raw
+   repository source, so the app was a white screen, while every deploy
+   step reported success. A green pipeline is not evidence that the page
+   renders; only fetching it is.
 3. Pages needs the owner's one-click setting (OWNER_INPUTS). If the
    deploy run fails on that, record `live-verify DEFERRED` — do NOT
    change repo settings via API, do NOT retry-loop.
