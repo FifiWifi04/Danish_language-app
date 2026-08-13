@@ -873,6 +873,16 @@ file from anywhere — iterations re-read it on every firing.
   actually fails when pointed at a source-serving site — it is the only
   thing standing between "pipeline green" and "app works", and this incident
   is the proof that those are different claims.
+  **CLOSED 2026-08-13:** deploy run 46 (`eff6fb1`) logged `Verifying
+  https://fifiwifi04.github.io/Danish_language-app/` → `OK — live page
+  references the built bundle.`, and the owner confirmed the app renders in
+  a browser. First end-to-end confirmation of the PAGE, not the pipeline.
+  *Standing lesson for every future firing:* tier-1 tests, tier-2 Playwright
+  smokes against a local `vite preview`, and a green deploy were ALL
+  truthfully green for four days while the live URL served a blank page.
+  None of them fetched the URL a user opens. When a workstream's value only
+  exists once deployed, verify the deployed artifact — see AUTON_ORDERS
+  step 6 tier 3.
 
 - **2026-08-07 — first firing could not see the build branch (environmental,
   not a repo defect).** *What broke:* the firing reported `git fetch origin
